@@ -88,7 +88,7 @@ const LoginPage = () => {
           <div className="inline-flex w-16 h-16 bg-blue-600 rounded-2xl items-center justify-center mb-3">
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-xl font-bold">On-Campus Placement System</h1>
+          <h1 className="text-xl font-bold">On-Campus Placement Management System</h1>
         </div>
 
         {/* Role */}
@@ -142,6 +142,7 @@ const LoginPage = () => {
           <input
             type="email"
             name="email"
+            placeholder='Email Address'
             required
             value={formData.email}
             onChange={handleInputChange}
@@ -159,6 +160,7 @@ const LoginPage = () => {
           <input
             type="password"
             name="password"
+            placeholder='password'
             required
             value={formData.password}
             onChange={handleInputChange}
