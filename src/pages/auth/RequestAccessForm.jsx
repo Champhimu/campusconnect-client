@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { GraduationCap, Building2, Mail, User, Phone, FileText, CheckCircle, Clock, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const RequestAccessPage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('campus');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -181,7 +183,7 @@ const RequestAccessPage = () => {
     );
   }
 
-  const formData = activeTab === 'tpo' ? tpoFormData : companyFormData;
+  const formData = activeTab === 'campus' ? campusFormData : companyFormData;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
@@ -307,7 +309,7 @@ const RequestAccessPage = () => {
                         name="instituteName"
                         value={formData.instituteName}
                         onChange={handleCampusInputChange}
-                        placeholder="Enter institute name"
+                        placeholder="Enter Institute Name"
                         className={`w-full pl-11 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
                           errors.instituteName ? 'border-red-500' : 'border-gray-300'
                         }`}
@@ -365,7 +367,7 @@ const RequestAccessPage = () => {
                         name="companyName"
                         value={formData.companyName}
                         onChange={handleCompanyInputChange}
-                        placeholder="Enter company name"
+                        placeholder="Enter Company Name"
                         className={`w-full pl-11 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
                           errors.companyName ? 'border-red-500' : 'border-gray-300'
                         }`}
@@ -479,7 +481,7 @@ const RequestAccessPage = () => {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-500 mt-6">
+        <p className="text-center text-sm text-gray-500 mt-6" onClick={() => navigate('/')}>
           Already have an account? <a href="#" className="text-blue-600 font-medium hover:underline">Login here</a>
         </p>
       </div>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { GraduationCap, Building2, Mail, Lock, LogIn, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     role: 'student',
@@ -246,8 +248,8 @@ const LoginPage = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <button className="text-blue-600 font-medium hover:underline">
-                Register here
+              <button className="text-blue-600 font-medium hover:underline" onClick={() => navigate('/requestTrial')}>
+                Request here
               </button>
             </p>
           </div>
