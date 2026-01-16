@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 
 import LoginPage from "./pages/auth/Login";
 import RequestAccessPage from "./pages/auth/RequestAccessForm";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 
 import StudentDashboard from "./pages/student/Dashboard";
 import CompanyDashboard from "./pages/company/Dashboard";
@@ -35,6 +36,7 @@ function App() {
       <Routes>
         {/* AUTH */}
         <Route path="/" element={redirectToDashboard()} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/requestTrial" element={<RequestAccessPage />} />
 
         {/* DASHBOARDS */}
