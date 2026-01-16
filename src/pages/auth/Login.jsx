@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { GraduationCap, Mail, Lock, LogIn, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -68,15 +69,31 @@ const LoginPage = () => {
   };
 
   const handleSubmit = () => {
-    if (!validateForm()) return;
+  if (!validateForm()) return;
 
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log('Login Data:', formData);
-      alert(`Login Successful\nRole: ${formData.role}`);
-    }, 1500);
-  };
+  setIsLoading(true);
+
+  setTimeout(() => {
+    setIsLoading(false);
+
+    switch (formData.role) {
+      case 'student':
+        navigate('/dashboard/student');
+        break;
+      case 'tpo':
+        navigate('/dashboard/tpo');
+        break;
+      case 'admin':
+        navigate('/dashboard/admin');
+        break;
+      case 'company':
+        navigate('/dashboard/company');
+        break;
+      default:
+        navigate('/');
+    }
+  }, 1500);
+};
 
   const selectedRole = roles.find(r => r.value === formData.role);
 
