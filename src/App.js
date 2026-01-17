@@ -28,6 +28,12 @@ import CompanyDashboard from "./pages/company/Dashboard";
 import AdminDashboard from "./pages/admin/Dashboard";
 import TPODashboard from "./pages/tpo/Dashboard";
 
+/* Company layout + pages */
+import CompanyLayout from "./layouts/CompanyLayout";
+
+import CompanyJobs from "./pages/company/Jobs";
+import CompanyProfile from "./pages/company/Profile";
+
 function App() {
   return (
     <Router>
@@ -42,6 +48,13 @@ function App() {
         <Route path="/dashboard/company" element={<CompanyDashboard />} />
         <Route path="/dashboard/admin" element={<AdminDashboard />} />
         <Route path="/dashboard/tpo" element={<TPODashboard />} />
+
+         {/*  COMPANY (WITH LAYOUT) */}
+        <Route path="/dashboard/company" element={<CompanyLayout />}>
+          <Route index element={<CompanyDashboard />} />
+          <Route path="jobs" element={<CompanyJobs />} />
+          <Route path="profile" element={<CompanyProfile />} />
+        </Route>
       </Routes>
     </Router>
   );
