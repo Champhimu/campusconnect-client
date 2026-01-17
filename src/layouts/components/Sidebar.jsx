@@ -14,7 +14,7 @@ const menuItems = [
   { path: "profile", icon: Building, label: "Company Profile" },
   { path: "jobs", icon: Briefcase, label: "Job Postings" },
   { path: "applicants", icon: Users, label: "Applicants" },
-  { path: "/company/invites", icon: MailPlus, label: "Institute Invites" },
+  { path: "invites", icon: MailPlus, label: "Institute Invites" },
 ];
 
 function Sidebar() {
