@@ -12,8 +12,8 @@ import {
 const menuItems = [
   { path: "/dashboard/company", icon: LayoutDashboard, label: "Dashboard" },
   { path: "profile", icon: Building, label: "Company Profile" },
-  { path: "/company/jobs", icon: Briefcase, label: "Job Postings" },
-  { path: "/company/applicants", icon: Users, label: "Applicants" },
+  { path: "jobs", icon: Briefcase, label: "Job Postings" },
+  { path: "applicants", icon: Users, label: "Applicants" },
   { path: "/company/invites", icon: MailPlus, label: "Institute Invites" },
 ];
 
