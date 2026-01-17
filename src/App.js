@@ -33,6 +33,8 @@ import CompanyLayout from "./layouts/CompanyLayout";
 
 import CompanyJobs from "./pages/company/Jobs";
 import CompanyProfile from "./pages/company/Profile";
+import ApplicantsPage from "./pages/company/Applicants";
+
 
 function App() {
   return (
@@ -54,6 +56,8 @@ function App() {
           <Route index element={<CompanyDashboard />} />
           <Route path="jobs" element={<CompanyJobs />} />
           <Route path="profile" element={<CompanyProfile />} />
+            <Route path="applicants" element={<ApplicantsPage />} />
+
         </Route>
       </Routes>
     </Router>
