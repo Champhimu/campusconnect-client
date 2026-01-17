@@ -34,6 +34,8 @@ import CompanyLayout from "./layouts/CompanyLayout";
 import CompanyJobs from "./pages/company/Jobs";
 import CompanyProfile from "./pages/company/Profile";
 import ApplicantsPage from "./pages/company/Applicants";
+import CollegeInvites from "./pages/company/CollegeInvites";
+
 
 
 function App() {
@@ -57,6 +59,8 @@ function App() {
           <Route path="jobs" element={<CompanyJobs />} />
           <Route path="profile" element={<CompanyProfile />} />
             <Route path="applicants" element={<ApplicantsPage />} />
+            <Route path="invites"  element={<CollegeInvites />}
+                 />
 
         </Route>
       </Routes>
