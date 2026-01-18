@@ -22,7 +22,8 @@ import AdminUsers from "./pages/admin/users";
 import AdminCompaniesPage from "./pages/admin/companies";
 import CompanyConfigPage from "./pages/admin/CompanyConfig";
 
-// import AdminReports from "./pages/admin/Reports";
+import ReportsPage from "./pages/admin/Reports";
+
 // import AdminAnnouncements from "./pages/admin/Announcements";
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="profile" element={<CompanyProfile />} />
           <Route path="applicants" element={<ApplicantsPage />} />
           <Route path="invites" element={<CollegeInvites />} />
+          
         </Route>
 
       {/* ADMIN ONLY */}
@@ -54,6 +56,8 @@ function App() {
             <Route path="users" element={<AdminUsers />} />
              <Route path="companies" element={<AdminCompaniesPage/>} />
               <Route path="company-config" element={<CompanyConfigPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+
          </Route>
 
         
