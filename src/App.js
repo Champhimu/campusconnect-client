@@ -20,7 +20,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminUsers from "./pages/admin/users";
 import AdminCompaniesPage from "./pages/admin/companies";
-// import AdminCompanyConfig from "./pages/admin/CompanyConfig";
+import CompanyConfigPage from "./pages/admin/CompanyConfig";
+
 // import AdminReports from "./pages/admin/Reports";
 // import AdminAnnouncements from "./pages/admin/Announcements";
 
@@ -52,9 +53,10 @@ function App() {
            <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
              <Route path="companies" element={<AdminCompaniesPage/>} />
+              <Route path="company-config" element={<CompanyConfigPage />} />
          </Route>
 
-
+        
       </Routes>
     </Router>
   );
