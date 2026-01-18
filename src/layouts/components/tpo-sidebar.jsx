@@ -18,13 +18,13 @@ export function TpoSidebar() {
   const location = useLocation();
 
   const menuItems = [
-    { to: "/dashboard/tpo", icon: LayoutDashboard, label: "Dashboard" },
-    { to: "/dashboard/tpo/students", icon: Users, label: "Students" },
-    { to: "/dashboard/tpo/companies", icon: Building, label: "Companies" },
-    { to: "/dashboard/tpo/jobs", icon: Briefcase, label: "Jobs & Drives" },
-    { to: "/dashboard/tpo/applications", icon: BarChart, label: "Applications" },
-    { to: "/dashboard/tpo/placement-tracker", icon: FileCheck, label: "Placement Tracker" },
-    { to: "/dashboard/tpo/notifications", icon: Bell, label: "Notifications" },
+    { to: "/tpo", icon: LayoutDashboard, label: "Dashboard" },
+    { to: "/tpo/students", icon: Users, label: "Students" },
+    { to: "/tpo/companies", icon: Building, label: "Companies" },
+    { to: "/tpo/jobs", icon: Briefcase, label: "Jobs & Drives" },
+    { to: "/tpo/applications", icon: BarChart, label: "Applications" },
+    { to: "/tpo/placement-tracker", icon: FileCheck, label: "Placement Tracker" },
+    { to: "/tpo/notifications", icon: Bell, label: "Notifications" },
   ];
 
   return (
