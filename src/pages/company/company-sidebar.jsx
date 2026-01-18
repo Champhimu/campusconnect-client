@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 
 const menuItems = [
-  { href: "/company/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/company", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/company/profile", icon: Building, label: "Company Profile" },
   { href: "/company/jobs", icon: Briefcase, label: "Job Postings" },
   { href: "/company/applicants", icon: Users, label: "Applicants" },

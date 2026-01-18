@@ -61,7 +61,7 @@ const LoginPage = () => {
           navigate("/dashboard/student");
           break;
         case "TPO":
-          navigate("/dashboard/tpo");
+          navigate("/tpo");
           break;
         case "CADMIN":
           navigate("/dashboard/admin");
