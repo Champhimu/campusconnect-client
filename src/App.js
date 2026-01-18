@@ -24,7 +24,7 @@ import CompanyConfigPage from "./pages/admin/CompanyConfig";
 
 import ReportsPage from "./pages/admin/Reports";
 
-// import AdminAnnouncements from "./pages/admin/Announcements";
+import AnnouncementsPage from "./pages/admin/Announcements";
 
 function App() {
   return (
@@ -57,7 +57,7 @@ function App() {
              <Route path="companies" element={<AdminCompaniesPage/>} />
               <Route path="company-config" element={<CompanyConfigPage />} />
               <Route path="reports" element={<ReportsPage />} />
-
+             <Route path="announcements" element={<AnnouncementsPage />} />
          </Route>
 
         
