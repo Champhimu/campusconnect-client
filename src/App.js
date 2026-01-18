@@ -10,6 +10,17 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import TPODashboard from "./pages/tpo/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+/* Company layout + pages */
+import CompanyLayout from "./pages/company/layout";
+
+import CompanyJobs from "./pages/company/Jobs";
+import CompanyProfile from "./pages/company/Profile";
+import ApplicantsPage from "./pages/company/Applicants";
+import CollegeInvites from "./pages/company/CollegeInvites";
+import InstituteInvitesPage from "./pages/company/CollegeInvites";
+
+
+
 function App() {
 
   const redirectToDashboard = () => {
@@ -45,11 +56,22 @@ function App() {
             <StudentDashboard />
           </ProtectedRoute>
           } />
-        <Route path="/dashboard/company" element={
-          <ProtectedRoute allowedRoles={["COMPANY"]}>
-            <CompanyDashboard />
-          </ProtectedRoute>
-          } />
+       <Route
+          path="/company"
+          element={
+            <ProtectedRoute allowedRoles={["COMPANY"]}>
+              <CompanyLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<CompanyDashboard />} />
+          <Route path="dashboard" element={<CompanyDashboard />} />
+          <Route path="jobs" element={<CompanyJobs />} />
+          <Route path="profile" element={<CompanyProfile />} />
+          <Route path="applicants" element={<ApplicantsPage />} />
+          <Route path="invites" element={<CollegeInvites />} />
+        </Route>
+
         <Route path="/dashboard/admin" element={
           <ProtectedRoute allowedRoles={["CADMIN"]}>
             <AdminDashboard />
