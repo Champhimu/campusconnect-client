@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GraduationCap, Building2, Mail, User, Phone, FileText, CheckCircle, Clock, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { submitRegistrationRequest } from "../../api/requestApi";
 
 const RequestAccessPage = () => {
   const navigate = useNavigate();
@@ -100,17 +101,45 @@ const RequestAccessPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsLoading(false);
-      const formData = activeTab === 'campus' ? campusFormData : companyFormData;
-      console.log('Request submitted:', { type: activeTab, data: formData });
+    const formData = activeTab === 'campus' ? campusFormData : companyFormData;
+    const requestType = activeTab === 'campus' ? "CAMPUS" : "COMPANY";
+    const instituteOrCompanyName = activeTab === 'campus' ? formData.instituteName : formData.companyName;
+    const website = activeTab === 'campus' ? formData.instituteWebsite : formData.companyWebsite;
+    const payload = {
+      requestType,
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      instituteOrCompanyName,
+      website,
+      additionalInformation: formData.message,
+      designation: formData.designation,
+      industry: formData.industry
+    };
+
+    try {
+      const response = await submitRegistrationRequest(payload);
+      alert("Form Submitted Successfully! Team will contact you soon");
+      console.log("Request submitted:", response.data);
       setIsSubmitted(true);
-    }, 1500);
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.response?.data?.message || "Something went wrong. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    //   const formData = activeTab === 'campus' ? campusFormData : companyFormData;
+    //   console.log('Request submitted:', { type: activeTab, data: formData });
+    //   setIsSubmitted(true);
+    // }, 1500);
   };
 
   const handleReset = () => {
