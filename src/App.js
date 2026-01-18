@@ -9,9 +9,9 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import StudentDashboard from "./pages/student/Dashboard";
 import CompanyDashboard from "./pages/company/Dashboard";
 import AdminDashboard from "./pages/admin/Dashboard";
+import TPODashboard from "./pages/tpo/Dashboard";
 
 /* TPO */
-import TPODashboard from "./pages/tpo/Dashboard";
 import TpoStudentsPage from "./pages/tpo/Students";
 import TpoLayout from "./layouts/TpoLayout";
 import TpoCompaniesPage from "./pages/tpo/Companies";
@@ -27,6 +27,11 @@ import CompanyJobs from "./pages/company/Jobs";
 import CompanyProfile from "./pages/company/Profile";
 import ApplicantsPage from "./pages/company/Applicants";
 import CollegeInvites from "./pages/company/CollegeInvites";
+
+
+// Layouts
+import StudentLayout from "./layouts/StudentLayout";
+
 
 function App() {
 
@@ -100,6 +105,30 @@ function App() {
           <Route path="notifications" element={<TpoNotificationsPage />} />
           <Route path="jobs" element={<TpoJobsPage />} />   
         </Route>
+
+{/* STUDENT ROUTES */}
+<Route
+  path="/student"
+  element={
+    <ProtectedRoute allowedRoles={["STUDENT"]}>
+      <StudentLayout />
+    </ProtectedRoute>
+  }
+>
+  {/* Student Dashboard */}
+  <Route path="dashboard" element={<StudentDashboard />} />
+
+  {/* Future student pages can be added here */}
+  {/* <Route path="profile" element={<StudentProfile />} /> */}
+  {/* <Route path="resume" element={<StudentResume />} /> */}
+  {/* <Route path="jobs" element={<StudentJobs />} /> */}
+  {/* <Route path="application-status" element={<StudentApplicationStatus />} /> */}
+  {/* <Route path="resume-score" element={<StudentResumeScore />} /> */}
+  {/* <Route path="placement-history" element={<StudentPlacementHistory />} /> */}
+  {/* <Route path="notifications" element={<StudentNotifications />} /> */}
+</Route>
+
+
       </Routes>
     </Router>
   );
@@ -108,26 +137,4 @@ function App() {
 export default App;
 
 
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import TpoLayout from "./layouts/TpoLayout";
 
-// import TPODashboard from "./pages/tpo/Dashboard";
-// import TpoStudentsPage from "./pages/tpo/Students";
-
-// function App() {
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-
-//         {/* TPO ROUTES WITH LAYOUT */}
-//         <Route path="/dashboard/tpo" element={<TpoLayout />}>
-//           <Route index element={<TPODashboard />} />
-//           <Route path="students" element={<TpoStudentsPage />} />
-//         </Route>
-
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// }
-
-// export default App;
