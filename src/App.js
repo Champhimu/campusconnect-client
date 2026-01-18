@@ -1,22 +1,3 @@
-// import './App.css';
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import LoginPage from './pages/auth/Login';
-// import RequestAccessPage from './pages/auth/RequestAccessForm';
-
-// function App() {
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/" element={<LoginPage />} />
-//         <Route path="/requestTrial" element={<RequestAccessPage />} />
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import LoginPage from "./pages/auth/Login";
@@ -29,12 +10,13 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import TPODashboard from "./pages/tpo/Dashboard";
 
 /* Company layout + pages */
-import CompanyLayout from "./layouts/CompanyLayout";
+import CompanyLayout from "./pages/company/layout";
 
 import CompanyJobs from "./pages/company/Jobs";
 import CompanyProfile from "./pages/company/Profile";
 import ApplicantsPage from "./pages/company/Applicants";
 import CollegeInvites from "./pages/company/CollegeInvites";
+import InstituteInvitesPage from "./pages/company/CollegeInvites";
 
 
 
@@ -49,13 +31,12 @@ function App() {
 
         {/* DASHBOARDS */}
         <Route path="/dashboard/student" element={<StudentDashboard />} />
-        <Route path="/dashboard/company" element={<CompanyDashboard />} />
         <Route path="/dashboard/admin" element={<AdminDashboard />} />
         <Route path="/dashboard/tpo" element={<TPODashboard />} />
 
          {/*  COMPANY (WITH LAYOUT) */}
-        <Route path="/dashboard/company" element={<CompanyLayout />}>
-          <Route index element={<CompanyDashboard />} />
+        <Route path="/company" element={<CompanyLayout />}>
+          <Route path="dashboard"index element={<CompanyDashboard />} />
           <Route path="jobs" element={<CompanyJobs />} />
           <Route path="profile" element={<CompanyProfile />} />
             <Route path="applicants" element={<ApplicantsPage />} />
