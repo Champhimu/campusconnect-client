@@ -18,8 +18,8 @@ import CollegeInvites from "./pages/company/CollegeInvites";
 /* ADMIN */
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
-// import AdminUsers from "./pages/admin/Users";
-// import AdminCompanies from "./pages/admin/Companies";
+import AdminUsers from "./pages/admin/users";
+import AdminCompaniesPage from "./pages/admin/companies";
 // import AdminCompanyConfig from "./pages/admin/CompanyConfig";
 // import AdminReports from "./pages/admin/Reports";
 // import AdminAnnouncements from "./pages/admin/Announcements";
@@ -50,6 +50,8 @@ function App() {
       {/* ADMIN ONLY */}
         <Route path="/dashboard/admin" element={<AdminLayout />}>
            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+             <Route path="companies" element={<AdminCompaniesPage/>} />
          </Route>
 
 
