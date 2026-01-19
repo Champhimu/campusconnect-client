@@ -1,17 +1,28 @@
-import React from "react";
-import { Briefcase, CheckCircle, Clock, XCircle } from "lucide-react";
-
-import { AppHeader } from "../../components/app-header/AppHeader";
-import { Card } from "../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {AppHeader} from "../../components/app-header/AppHeader";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
+// import { RecommendedJobs } from "./components/RecommendedJobs";
 
 
-import { companies } from "../../lib/companies";
-import { PlaceHolderImages } from '../../lib/placeholder-images';
 
+import { Briefcase, CheckCircle, Clock, XCircle } from "lucide-react";
 
-const StudentDashboard = () => {
+// TEMP dummy data (same logic as ZIP)
+const companies = [
+  { id: 1, name: "Innovatech Solutions", logo: "https://via.placeholder.com/40" },
+  { id: 2, name: "Quantum Dynamics", logo: "https://via.placeholder.com/40" },
+  { id: 3, name: "NexGen Robotics", logo: "https://via.placeholder.com/40" },
+  { id: 4, name: "TechNova", logo: "https://via.placeholder.com/40" },
+  { id: 5, name: "CyberSoft", logo: "https://via.placeholder.com/40" },
+];
+
+export default function StudentDashboard() {
   const nextCompanies = companies.slice(0, 5);
 
   return (
@@ -19,35 +30,28 @@ const StudentDashboard = () => {
       <AppHeader title="Dashboard" />
 
       <main className="flex flex-1 flex-col gap-6 p-4 md:gap-8 md:p-8">
-        {/* Eligibility Status */}
+        {/* ELIGIBILITY STATUS */}
         <section>
-          <h2 className="text-2xl font-semibold mb-4">
-            Eligibility Status
-          </h2>
+          <h2 className="text-2xl font-semibold mb-4">Eligibility Status</h2>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {nextCompanies.map((company, index) => {
-              const logo = PlaceHolderImages.find(
-                (p) => p.id === company.logo
-              );
               const isEligible = index % 2 === 0;
 
               return (
                 <Card key={company.id}>
-                  <div className="flex items-center gap-4 p-4">
-                    {logo && (
-                      <img
-                        src={logo.imageUrl}
-                        alt={company.name}
-                        className="h-10 w-10 rounded-lg object-cover"
-                      />
-                    )}
-                    <h3 className="text-lg font-medium">
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    <img
+                      src={company.logo}
+                      alt={company.name}
+                      className="h-10 w-10 rounded-lg"
+                    />
+                    <CardTitle className="text-lg">
                       {company.name}
-                    </h3>
-                  </div>
+                    </CardTitle>
+                  </CardHeader>
 
-                  <div className="p-4 pt-0">
+                  <CardContent>
                     <Badge
                       variant={isEligible ? "default" : "destructive"}
                       className="w-full justify-center"
@@ -62,71 +66,71 @@ const StudentDashboard = () => {
 
                     {!isEligible && (
                       <p className="text-xs text-gray-500 mt-2 text-center">
-                        Reason too low
+                        Reason: CGPA too low
                       </p>
                     )}
-                  </div>
+                  </CardContent>
                 </Card>
               );
             })}
           </div>
         </section>
 
-        {/* Stats Section */}
+        {/* STATS */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card>
-            <div className="p-4">
-              <h3 className="flex items-center gap-2 text-lg font-medium">
-                <Briefcase className="text-primary" />
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Briefcase />
                 Applied Jobs
-              </h3>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <p className="text-4xl font-bold">12</p>
               <p className="text-sm text-gray-500">
                 companies applied to
               </p>
-            </div>
+            </CardContent>
           </Card>
 
           <Card>
-            <div className="p-4 flex items-center gap-4">
+            <CardHeader>
+              <CardTitle>Offer Received</CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center gap-4">
               <img
-                src="https://images.unsplash.com/photo-1662052955098-042b46e60c2b"
-                alt="Innovatech"
-                className="h-12 w-12 rounded-lg object-cover"
+                src="https://via.placeholder.com/50"
+                alt="Company"
+                className="rounded-lg"
               />
               <div>
                 <p className="font-bold">Software Engineer</p>
-                <p className="text-gray-500">
-                  Innovatech Solutions
-                </p>
+                <p className="text-gray-500">Innovatech Solutions</p>
               </div>
-            </div>
+            </CardContent>
           </Card>
 
           <Card>
-            <div className="p-4">
-              <h3 className="flex items-center gap-2 text-lg font-medium">
-                <Clock className="text-primary" />
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock />
                 Upcoming Campus Drives
-              </h3>
-
-              <div className="space-y-2 mt-2">
-                <p className="font-medium">
-                  Quantum Dynamics – Oct 25, 2024
-                </p>
-                <p className="font-medium">
-                  NexGen Robotics – Nov 2, 2024
-                </p>
-                <Button variant="link" className="p-0 h-auto">
-                  View all
-                </Button>
-              </div>
-            </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="font-medium">
+                Quantum Dynamics – Oct 25, 2024
+              </p>
+              <p className="font-medium">
+                NexGen Robotics – Nov 2, 2024
+              </p>
+              <Button variant="link">View all</Button>
+            </CardContent>
           </Card>
         </div>
+     
+
       </main>
     </div>
   );
-};
-
-export default StudentDashboard;
+}

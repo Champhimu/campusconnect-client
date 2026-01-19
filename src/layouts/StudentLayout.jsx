@@ -1,28 +1,18 @@
-import React from "react";
+
 import { Outlet } from "react-router-dom";
+import { SidebarProvider, SidebarInset } from "../components/ui/sidebar";
+import StudentSidebar  from "../layouts/components/student-sidebar";
 
-import { SidebarProvider } from "../components/ui/sidebar";
-import StudentSidebar from "./components/student-sidebar";
-
-
-const StudentLayout = () => {
+export default function StudentLayout() {
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full overflow-hidden">
-        
-        {/* Sidebar */}
-        <aside className="w-[260px] shrink-0 border-r bg-background">
-          <StudentSidebar />
-        </aside>
+      {/* Student Sidebar */}
+      <StudentSidebar />
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-muted/30">
-          <Outlet />
-        </main>
-
-      </div>
+      {/* Main content area */}
+      <SidebarInset>
+        <Outlet />
+      </SidebarInset>
     </SidebarProvider>
   );
-};
-
-export default StudentLayout;
+}

@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 
-import { enhanceResume } from "../../services/resumeService";
+import { enhanceResume } from "../../services/resumeServices";
 
 /* ------------------ ZOD SCHEMA ------------------ */
 const resumeSchema = z.object({

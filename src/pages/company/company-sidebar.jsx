@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { NavLink, useLocation } from "react-router-dom"
 import {
   Sidebar,
   SidebarHeader,
@@ -29,30 +29,38 @@ const menuItems = [
 ]
 
 export function CompanySidebar() {
-  const { pathname } = useLocation()
+    const location = useLocation();
 
   return (
     <Sidebar>
+      {/* Header */}
       <SidebarHeader>
         <Logo />
       </SidebarHeader>
 
+      {/* Main menu */}
       <SidebarMenu className="flex-1">
-        {menuItems.map(item => (
-          <SidebarMenuItem key={item.href}>
-            <Link to={item.href}>
-              <SidebarMenuButton key={item.href}
-                isActive={pathname.startsWith(item.href)}
-                tooltip={item.label}
+        {menuItems.map((item) => {
+          const active = location.pathname === item.href;
+          const Icon = item.icon;
+
+          return (
+            <SidebarMenuItem key={item.href}>
+              <NavLink 
+              key={item.href}
+              to={item.href}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm
+              ${active ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"}`}
               >
-                <item.icon />
-                <span>{item.label}</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-        ))}
+                  <Icon />
+                  <span>{item.label}</span>
+              </NavLink>
+            </SidebarMenuItem>
+          );
+        })}
       </SidebarMenu>
 
+      {/* Footer */}
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -71,5 +79,5 @@ export function CompanySidebar() {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

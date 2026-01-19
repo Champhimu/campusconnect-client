@@ -2,14 +2,18 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { AdminSidebar } from "./components/admin-sidebar";
+import { SidebarProvider, SidebarInset } from "../components/ui/sidebar";
 
 export default function AdminLayout() {
   return (
-    <div className="flex h-screen">
+    <SidebarProvider>
+      {/* Student Sidebar */}
       <AdminSidebar />
-      <main className="flex-1 p-4 overflow-auto">
+
+      {/* Main content area */}
+      <SidebarInset>
         <Outlet />
-      </main>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

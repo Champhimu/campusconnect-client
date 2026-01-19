@@ -25,18 +25,19 @@ import {
   Settings,
 } from "lucide-react";
 
+/* Sidebar menu items */
 const menuItems = [
-  { path: "/student/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { path: "/student/profile", icon: User, label: "My Profile" },
-  { path: "/student/resume", icon: FileText, label: "Resume & Skills" },
-  { path: "/student/jobs", icon: Briefcase, label: "Jobs" },
-  { path: "/student/application-status", icon: Upload, label: "Application Status" },
-  { path: "/student/resume-score", icon: Wand2, label: "AI Resume Score" },
-  { path: "/student/placement-history", icon: History, label: "Placement History" },
-  { path: "/student/notifications", icon: Bell, label: "Notifications" },
+  { href: "/student", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/student/profile", icon: User, label: "My Profile" },
+  { href: "/student/resume", icon: Upload, label: "Resume & Skills" },
+  { href: "/student/jobs", icon: Briefcase, label: "Jobs" },
+  { href: "/student/application-status", icon: FileText, label: "Application Status" },
+  { href: "/student/resume-score", icon: Wand2, label: "AI Resume Score" },
+  { href: "/student/placement-history", icon: History, label: "Placement History" },
+  { href: "/student/notifications", icon: Bell, label: "Notifications" },
 ];
 
-const StudentSidebar = () => {
+export default function StudentSidebar() {
   const location = useLocation();
 
   return (
@@ -46,22 +47,22 @@ const StudentSidebar = () => {
         <Logo />
       </SidebarHeader>
 
-      {/* Main Menu */}
+      {/* Main menu */}
       <SidebarMenu className="flex-1">
         {menuItems.map((item) => {
-          const isActive = location.pathname.startsWith(item.path);
+          const active = location.pathname === item.href;
           const Icon = item.icon;
 
           return (
-            <SidebarMenuItem key={item.path}>
-              <NavLink to={item.path} className="block">
-                <SidebarMenuButton
-                  isActive={isActive}
-                  tooltip={item.label}
-                >
+            <SidebarMenuItem key={item.href}>
+              <NavLink 
+              key={item.href}
+              to={item.href}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm
+              ${active ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"}`}
+              >
                   <Icon />
                   <span>{item.label}</span>
-                </SidebarMenuButton>
               </NavLink>
             </SidebarMenuItem>
           );
@@ -88,6 +89,4 @@ const StudentSidebar = () => {
       </SidebarFooter>
     </Sidebar>
   );
-};
-
-export default StudentSidebar;
+}
