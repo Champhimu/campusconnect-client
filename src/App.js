@@ -40,6 +40,15 @@ import ResumeEnhancer from "./pages/student/ResumeEnhancer";
 import ResumeScore from "./pages/student/ResumeScore";
 import ResumeAndSkillsPage from "./pages/student/ResumeAndSkills";
 
+/* ADMIN */
+import AdminLayout from "./layouts/AdminLayout";
+// import AdminDashboard from "./pages/admin/Dashboard";
+import AdminUsers from "./pages/admin/users";
+import AdminCompaniesPage from "./pages/admin/companies";
+import CompanyConfigPage from "./pages/admin/CompanyConfig";
+import ReportsPage from "./pages/admin/Reports";
+import AnnouncementsPage from "./pages/admin/Announcements";
+
 function App() {
 
   const redirectToDashboard = () => {
@@ -138,6 +147,15 @@ function App() {
 
         </Route>
 
+      {/* ADMIN ONLY */}
+        <Route path="/admin" element={<AdminLayout />}>
+           <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+             <Route path="companies" element={<AdminCompaniesPage/>} />
+              <Route path="company-config" element={<CompanyConfigPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+             <Route path="announcements" element={<AnnouncementsPage />} />
+         </Route>
 
       </Routes>
     </Router>

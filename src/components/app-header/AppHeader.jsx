@@ -22,7 +22,8 @@ export function AppHeader({ title, description, children }) {
   }, [])
 
   function logout(){
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate('/');
   }
   return (
