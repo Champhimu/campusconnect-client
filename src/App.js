@@ -31,6 +31,15 @@ import CollegeInvites from "./pages/company/CollegeInvites";
 
 // Layouts
 import StudentLayout from "./layouts/StudentLayout";
+import StudentProfilePage from "./pages/student/StudentProfilePage"; 
+import Jobs from "./pages/student/Jobs";
+import ApplicationStatusPage from "./pages/student/ApplicationStatus";
+import StudentCompaniesPage from "./pages/student/Companies";
+import StudentNotificationsPage from "./pages/student/Notifications";
+import PlacementHistoryPage from "./pages/student/PlacementHistory";
+import ResumeEnhancer from "./pages/student/ResumeEnhancer";
+import ResumeScore from "./pages/student/ResumeScore";
+import ResumeAndSkillsPage from "./pages/student/ResumeAndSkills";
 
 
 function App() {
@@ -117,15 +126,16 @@ function App() {
 >
   {/* Student Dashboard */}
   <Route path="dashboard" element={<StudentDashboard />} />
+  <Route path="profile" element={<StudentProfilePage />} />
+  <Route path="/student/jobs" element={<Jobs />} />
+  <Route path="application-status" element={<ApplicationStatusPage />} />
+  <Route path="companies" element={<StudentCompaniesPage />} />
+  <Route path="notifications" element={<StudentNotificationsPage />} />
+  <Route path="placement-history" element={<PlacementHistoryPage />} />
+  <Route path="/student/resume-score" element={<ResumeEnhancer />} />
+  <Route path="/student/resume-score" element={<ResumeScore />} />
+  <Route path="/student/resume" element={<ResumeAndSkillsPage />} />
 
-  {/* Future student pages can be added here */}
-  {/* <Route path="profile" element={<StudentProfile />} /> */}
-  {/* <Route path="resume" element={<StudentResume />} /> */}
-  {/* <Route path="jobs" element={<StudentJobs />} /> */}
-  {/* <Route path="application-status" element={<StudentApplicationStatus />} /> */}
-  {/* <Route path="resume-score" element={<StudentResumeScore />} /> */}
-  {/* <Route path="placement-history" element={<StudentPlacementHistory />} /> */}
-  {/* <Route path="notifications" element={<StudentNotifications />} /> */}
 </Route>
 
 
