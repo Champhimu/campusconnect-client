@@ -9,9 +9,9 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import StudentDashboard from "./pages/student/Dashboard";
 import CompanyDashboard from "./pages/company/Dashboard";
 import AdminDashboard from "./pages/admin/Dashboard";
+import TPODashboard from "./pages/tpo/Dashboard";
 
 /* TPO */
-import TPODashboard from "./pages/tpo/Dashboard";
 import TpoStudentsPage from "./pages/tpo/Students";
 import TpoLayout from "./layouts/TpoLayout";
 import TpoCompaniesPage from "./pages/tpo/Companies";
@@ -28,9 +28,10 @@ import CompanyProfile from "./pages/company/Profile";
 import ApplicantsPage from "./pages/company/Applicants";
 import CollegeInvites from "./pages/company/CollegeInvites";
 
-// Student Layouts
+
+// Layouts
 import StudentLayout from "./layouts/StudentLayout";
-import StudentProfilePage from "./pages/student/StudentProfilePage";
+import StudentProfilePage from "./pages/student/StudentProfilePage"; 
 import Jobs from "./pages/student/Jobs";
 import ApplicationStatusPage from "./pages/student/ApplicationStatus";
 import StudentCompaniesPage from "./pages/student/Companies";
