@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { NavLink, useLocation } from "react-router-dom";
 
 import {
   Sidebar,
@@ -12,7 +11,7 @@ import {
   SidebarFooter,
 } from "../../components/ui/sidebar";
 
-import { Logo } from "../../components/logo";
+import Logo from "../../components/logo/Logo";
 
 import {
   LayoutDashboard,
@@ -29,8 +28,8 @@ import {
 
 /* Sidebar menu items */
 const menuItems = [
-  { href: "/student/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "profile", icon: User, label: "My Profile" },
+  { href: "/student", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/student/profile", icon: User, label: "My Profile" },
   { href: "/student/resume", icon: Upload, label: "Resume & Skills" },
   { href: "/student/jobs", icon: Briefcase, label: "Jobs" },
   { href: "/student/application-status", icon: FileText, label: "Application Status" },
@@ -40,7 +39,7 @@ const menuItems = [
 ];
 
 export default function StudentSidebar() {
-  const pathname = usePathname();
+  const location = useLocation();
 
   return (
     <Sidebar>
@@ -52,19 +51,20 @@ export default function StudentSidebar() {
       {/* Main menu */}
       <SidebarMenu className="flex-1">
         {menuItems.map((item) => {
+          const active = location.pathname === item.href;
           const Icon = item.icon;
 
           return (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href}>
-                <SidebarMenuButton
-                  isActive={pathname.startsWith(item.href)}
-                  tooltip={item.label}
-                >
+              <NavLink 
+              key={item.href}
+              to={item.href}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm
+              ${active ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"}`}
+              >
                   <Icon />
                   <span>{item.label}</span>
-                </SidebarMenuButton>
-              </Link>
+              </NavLink>
             </SidebarMenuItem>
           );
         })}

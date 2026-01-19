@@ -1,94 +1,146 @@
-import React from "react";
+
+"use client";
+
+import React, {
+  createContext,
+  useContext,
+  useId,
+  forwardRef,
+} from "react";
 import * as RechartsPrimitive from "recharts";
 import { cn } from "../../lib/utils";
 
-/* Theme constants */
-const THEMES = {
-  light: "",
-  dark: ".dark",
-};
+/* ---------------------------------- */
+/* Helpers */
+/* ---------------------------------- */
 
-/* Chart context */
-const ChartContext = React.createContext(null);
+function getPayloadConfigFromPayload(config, payload, key) {
+  if (!payload || typeof payload !== "object") return undefined;
+  return key in config ? config[key] : undefined;
+}
+
+/* ---------------------------------- */
+/* Context */
+/* ---------------------------------- */
+
+const ChartContext = createContext(null);
 
 function useChart() {
-  const context = React.useContext(ChartContext);
+  const context = useContext(ChartContext);
   if (!context) {
     throw new Error("useChart must be used within a <ChartContainer />");
   }
   return context;
 }
 
-/* Chart container */
-const ChartContainer = React.forwardRef(
-  ({ id, className, children, config, ...props }, ref) => {
-    const uniqueId = React.useId();
-    const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+/* ---------------------------------- */
+/* Chart Container */
+/* ---------------------------------- */
 
-    return (
-      <ChartContext.Provider value={{ config }}>
-        <div
-          data-chart={chartId}
-          ref={ref}
-          className={cn(
-            "flex aspect-video justify-center text-xs " +
-              "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground " +
-              "[&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 " +
-              "[&_.recharts-curve.recharts-tooltip-cursor]:stroke-border " +
-              "[&_.recharts-dot[stroke='#fff']]:stroke-transparent " +
-              "[&_.recharts-layer]:outline-none " +
-              "[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted " +
-              "[&_.recharts-sector]:outline-none",
-            className
-          )}
-          {...props}
-        >
-          <ChartStyle id={chartId} config={config} />
-          <RechartsPrimitive.ResponsiveContainer>
-            {children}
-          </RechartsPrimitive.ResponsiveContainer>
-        </div>
-      </ChartContext.Provider>
-    );
-  }
-);
+const THEMES = {
+  light: "",
+  dark: ".dark",
+};
 
-ChartContainer.displayName = "ChartContainer";
+const ChartContainer = forwardRef(function ChartContainer(
+  { id, className, children, config, ...props },
+  ref
+) {
+  const uniqueId = useId();
+  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
 
-/* Chart style helper */
-const ChartStyle = ({ id, config }) => {
-  if (!config) return null;
+  return (
+    <ChartContext.Provider value={{ config }}>
+      <div
+        ref={ref}
+        data-chart={chartId}
+        className={cn("flex aspect-video justify-center text-xs", className)}
+        {...props}
+      >
+        <ChartStyle id={chartId} config={config} />
+        <RechartsPrimitive.ResponsiveContainer>
+          {children}
+        </RechartsPrimitive.ResponsiveContainer>
+      </div>
+    </ChartContext.Provider>
+  );
+});
 
-  const colorConfig = Object.entries(config).filter(
-    ([_, item]) => item.theme || item.color
+/* ---------------------------------- */
+/* Chart Style */
+/* ---------------------------------- */
+
+function ChartStyle({ id, config }) {
+  const colorConfig = Object.entries(config || {}).filter(
+    ([_, conf]) => conf.theme || conf.color
   );
 
   if (!colorConfig.length) return null;
 
-  const styleContent = Object.entries(THEMES)
-    .map(([theme, prefix]) => {
-      const vars = colorConfig
-        .map(([key, item]) => {
-          const color = item.theme?.[theme] || item.color;
-          return color ? `--color-${key}: ${color};` : null;
-        })
-        .filter(Boolean)
-        .join("\n");
+  return (
+    <style
+      dangerouslySetInnerHTML={{
+        __html: Object.entries(THEMES)
+          .map(
+            ([theme, prefix]) => `
+${prefix} [data-chart=${id}] {
+${colorConfig
+  .map(([key, item]) => {
+    const color = (item.theme && item.theme[theme]) || item.color;
+    return color ? `--color-${key}: ${color};` : null;
+  })
+  .filter(Boolean)
+  .join("\n")}
+}`
+          )
+          .join("\n"),
+      }}
+    />
+  );
+}
 
-      return `${prefix} [data-chart=${id}] {\n${vars}\n}`;
-    })
-    .join("\n");
-
-  return <style dangerouslySetInnerHTML={{ __html: styleContent }} />;
-};
-
+/* ---------------------------------- */
 /* Tooltip */
+/* ---------------------------------- */
+
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
-/* Tooltip content */
 const ChartTooltipContent = React.forwardRef(
-  ({ active, payload, className }, ref) => {
+  (
+    {
+      active,
+      payload,
+      className,
+      hideLabel = false,
+      label,
+      labelFormatter,
+      labelClassName,
+      formatter,
+    },
+    ref
+  ) => {
     const { config } = useChart();
+
+    const tooltipLabel = React.useMemo(() => {
+      if (!active || !payload?.length || hideLabel) return null;
+
+      const [item] = payload;
+      const key = item.dataKey || item.name;
+      const itemConfig = getPayloadConfigFromPayload(config, item, key);
+
+      const value =
+        typeof label === "string"
+          ? config[label]?.label || label
+          : itemConfig?.label;
+
+      if (!value) return null;
+
+      return (
+        <div className={cn("font-medium", labelClassName)}>
+          {labelFormatter ? labelFormatter(value) : value}
+        </div>
+      );
+    }, [active, payload, hideLabel, label, labelFormatter, labelClassName, config]);
 
     if (!active || !payload?.length) return null;
 
@@ -96,39 +148,70 @@ const ChartTooltipContent = React.forwardRef(
       <div
         ref={ref}
         className={cn(
-          "grid min-w-[8rem] gap-1.5 rounded-lg border bg-background px-2.5 py-1.5 text-xs shadow-xl",
+          "rounded-lg border bg-background p-2 text-xs shadow-md",
           className
         )}
       >
-        {payload.map((item, index) => {
-          const key = item.name || item.dataKey;
-          const itemConfig = config?.[key];
-
-          return (
-            <div key={index} className="flex justify-between gap-2">
-              <span className="text-muted-foreground">
-                {itemConfig?.label || item.name}
-              </span>
-              <span className="font-mono font-medium">
-                {item.value}
-              </span>
-            </div>
-          );
-        })}
+        {tooltipLabel}
+        {payload.map((item, index) => (
+          <div key={index} className="flex justify-between gap-2">
+            <span className="text-muted-foreground">{item.name}</span>
+            <span className="font-mono">
+              {formatter ? formatter(item.value) : item.value}
+            </span>
+          </div>
+        ))}
       </div>
     );
   }
 );
 
-ChartTooltipContent.displayName = "ChartTooltipContent";
 
+/* ---------------------------------- */
 /* Legend */
+/* ---------------------------------- */
+
 const ChartLegend = RechartsPrimitive.Legend;
+
+const ChartLegendContent = forwardRef(function ChartLegendContent(
+  { payload, className },
+  ref
+) {
+  const { config } = useChart();
+  if (!payload?.length) return null;
+
+  return (
+    <div ref={ref} className={cn("flex gap-4", className)}>
+      {payload.map((item) => {
+        const itemConfig = getPayloadConfigFromPayload(
+          config,
+          item,
+          item.dataKey
+        );
+
+        return (
+          <div key={item.value} className="flex items-center gap-2">
+            <span
+              className="h-2 w-2 rounded"
+              style={{ backgroundColor: item.color }}
+            />
+            {itemConfig?.label || item.value}
+          </div>
+        );
+      })}
+    </div>
+  );
+});
+
+/* ---------------------------------- */
+/* EXPORTS */
+/* ---------------------------------- */
 
 export {
   ChartContainer,
-  ChartStyle,
   ChartTooltip,
   ChartTooltipContent,
   ChartLegend,
+  ChartLegendContent,
 };
+

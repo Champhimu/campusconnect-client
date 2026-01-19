@@ -10,59 +10,65 @@ import {
 } from "lucide-react";
 
 const menuItems = [
-  { path: "/dashboard/company", icon: LayoutDashboard, label: "Dashboard" },
-  { path: "profile", icon: Building, label: "Company Profile" },
-  { path: "jobs", icon: Briefcase, label: "Job Postings" },
-  { path: "applicants", icon: Users, label: "Applicants" },
-  { path: "invites", icon: MailPlus, label: "Institute Invites" },
+  { path: "/company", icon: LayoutDashboard, label: "Dashboard" },
+  { path: "/company/profile", icon: Building, label: "Company Profile" },
+  { path: "/company/jobs", icon: Briefcase, label: "Job Postings" },
+  { path: "/company/applicants", icon: Users, label: "Applicants" },
+  { path: "/company/invites", icon: MailPlus, label: "Institute Invites" },
 ];
 
 function Sidebar() {
-  const location = useLocation();
+    const location = useLocation();
 
-  return (
-    <aside className="w-64 bg-white border-r flex flex-col">
-      {/* HEADER */}
-      <div className="px-6 py-4 text-xl font-bold border-b">
-        CampusConnect
-      </div>
+    return (
+      <Sidebar>
+        {/* Header */}
+        <SidebarHeader>
+          <Logo />
+        </SidebarHeader>
 
-      {/* MENU */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
-        {menuItems.map((item) => {
-          const isActive = location.pathname.startsWith(item.path);
+        {/* Main menu */}
+        <SidebarMenu className="flex-1">
+          {menuItems.map((item) => {
+            const active = location.pathname === item.path;
+            const Icon = item.icon;
 
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition ${
-                isActive
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              <item.icon className="h-4 w-4" />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+            return (
+              <SidebarMenuItem key={item.path}>
+                <NavLink 
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm
+                ${active ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"}`}
+                >
+                    <Icon />
+                    <span>{item.label}</span>
+                </NavLink>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
 
-      {/* FOOTER */}
-      <div className="border-t p-3 space-y-1">
-        <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-100">
-          <LifeBuoy className="h-4 w-4" />
-          Help
-        </button>
+        {/* Footer */}
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Help">
+                <LifeBuoy />
+                <span>Help</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
 
-        <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-gray-100">
-          <Settings className="h-4 w-4" />
-          Settings
-        </button>
-      </div>
-    </aside>
-  );
+            <SidebarMenuItem>
+              <SidebarMenuButton tooltip="Settings">
+                <Settings />
+                <span>Settings</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+    );
 }
 
 export default Sidebar;

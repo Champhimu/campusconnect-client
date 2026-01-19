@@ -11,16 +11,13 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "../../components/ui/card";
-import { Checkbox } from "../../components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import { Label } from "../../components/ui/label";
 import {
   Select,
   SelectContent,
@@ -36,7 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
-import { MoreHorizontal, FileText } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 export default function ApplicantsPage() {
   const applicants = [
@@ -67,37 +64,27 @@ export default function ApplicantsPage() {
     <div className="flex min-h-screen w-full flex-col">
       <AppHeader
         title="Applicants"
-        description="Manage and track applicants for your job postings."
+        description="View and manage applicants for your campus drives."
       />
 
       <main className="flex flex-1 flex-col gap-6 p-4 md:p-8">
         {/* Filters */}
         <Card>
           <CardHeader>
-            <CardTitle>Filter Applicants</CardTitle>
-            <CardDescription>
-              Narrow down applicants by college, status, or round.
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="grid gap-4 md:grid-cols-3">
-            <div className="space-y-2">
-              <Label>College</Label>
+            <CardTitle className="font-headline">Filter Applicants</CardTitle>
+            <div className="flex flex-col md:flex-row gap-4 pt-4">
               <Select>
-                <SelectTrigger>
+                <SelectTrigger className="w-full md:w-[200px]">
                   <SelectValue placeholder="Select college" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="xyz">XYZ Institute of Technology</SelectItem>
-                  <SelectItem value="abc">ABC College of Engineering</SelectItem>
+                  <SelectItem value="xyz-institute">XYZ Institute of Technology</SelectItem>
+                  <SelectItem value="abc-college">ABC College of Engineering</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
 
-            <div className="space-y-2">
-              <Label>Status</Label>
               <Select>
-                <SelectTrigger>
+                <SelectTrigger className="w-full md:w-[200px]">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -106,84 +93,59 @@ export default function ApplicantsPage() {
                   <SelectItem value="offered">Offered</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
 
-            <div className="space-y-2">
-              <Label>Round</Label>
               <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select round" />
+                <SelectTrigger className="w-full md:w-[200px]">
+                  <SelectValue placeholder="Filter by Round" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="r1">Round 1 Cleared</SelectItem>
-                  <SelectItem value="r2">Round 2 Cleared</SelectItem>
+                  <SelectItem value="round1">Round 1 Cleared</SelectItem>
+                  <SelectItem value="round2">Round 2 Cleared</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Applicants Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Applicants</CardTitle>
           </CardHeader>
-
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[60px]"></TableHead>
                   <TableHead>Applicant</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Round Progress</TableHead>
                   <TableHead>Offer Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
-
               <TableBody>
-                {applicants.map((applicant) => (
+                {applicants.map(applicant => (
                   <TableRow key={applicant.id}>
-                    <TableCell className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarFallback>
-                          {applicant.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      {applicant.name}
-                    </TableCell>
-
                     <TableCell>
-                      <Badge>{applicant.status}</Badge>
+                      <Avatar>
+                        <AvatarImage src={`https://picsum.photos/seed/${applicant.id}/40/40`} />
+                        <AvatarFallback>{applicant.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
                     </TableCell>
-
+                    <TableCell className="font-medium">{applicant.name}</TableCell>
+                    <TableCell>
+                      <Badge variant={applicant.status === "Rejected" ? "destructive" : "secondary"}>{applicant.status}</Badge>
+                    </TableCell>
                     <TableCell>{applicant.round}</TableCell>
-
                     <TableCell>{applicant.offer}</TableCell>
-
-                    <TableCell className="text-right">
+                    <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-
                         <DropdownMenuContent align="end">
+                          <DropdownMenuItem>View Profile</DropdownMenuItem>
                           <DropdownMenuItem>
-                            <FileText className="mr-2 h-4 w-4" />
-                            View Profile
+                            {applicant.status === "Rejected" ? "Reconsider" : "Reject"}
                           </DropdownMenuItem>
-
-                          <DropdownMenuItem>
-                            {applicant.status === "Rejected"
-                              ? "Reconsider"
-                              : "Reject"}
-                          </DropdownMenuItem>
-
-                          <DropdownMenuItem>
-                            Generate Offer Letter
-                          </DropdownMenuItem>
+                          <DropdownMenuItem>Generate Offer Letter</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
