@@ -58,19 +58,19 @@ const LoginPage = () => {
 
       switch (formData.role) {
         case "STUDENT":
-          navigate("/dashboard/student");
+          navigate("/student");
           break;
         case "TPO":
           navigate("/tpo");
           break;
         case "CADMIN":
-          navigate("/dashboard/admin");
+          navigate("/admin");
           break;
         case "COMPANY":
           navigate("/company");
           break;
         case "SUPERADMIN":
-          navigate("/dashboard/superadmin");
+          navigate("/superadmin");
           break;
         default:
           navigate("/");

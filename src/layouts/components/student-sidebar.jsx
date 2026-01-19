@@ -1,4 +1,7 @@
-import { NavLink, useLocation } from "react-router-dom"
+"use client";
+
+import { NavLink, useLocation } from "react-router-dom";
+
 import {
   Sidebar,
   SidebarHeader,
@@ -6,30 +9,37 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
-} from "../../components/ui/sidebar"
-import Logo from "../../components/logo/Logo"
+} from "../../components/ui/sidebar";
+
+import Logo from "../../components/logo/Logo";
+
 import {
   LayoutDashboard,
-  Building,
   Briefcase,
-  Users,
+  FileText,
+  User,
+  Upload,
+  History,
+  Bell,
+  Wand2,
   LifeBuoy,
   Settings,
-  Bell,
-  MailPlus,
-} from "lucide-react"
+} from "lucide-react";
 
+/* Sidebar menu items */
 const menuItems = [
-  { href: "/company", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/company/profile", icon: Building, label: "Company Profile" },
-  { href: "/company/jobs", icon: Briefcase, label: "Job Postings" },
-  { href: "/company/applicants", icon: Users, label: "Applicants" },
-  { href: "/company/invites", icon: MailPlus, label: "Institute Invites" },
-  { href: "/company/notifications", icon: Bell, label: "Notifications" },
-]
+  { href: "/student", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/student/profile", icon: User, label: "My Profile" },
+  { href: "/student/resume", icon: Upload, label: "Resume & Skills" },
+  { href: "/student/jobs", icon: Briefcase, label: "Jobs" },
+  { href: "/student/application-status", icon: FileText, label: "Application Status" },
+  { href: "/student/resume-score", icon: Wand2, label: "AI Resume Score" },
+  { href: "/student/placement-history", icon: History, label: "Placement History" },
+  { href: "/student/notifications", icon: Bell, label: "Notifications" },
+];
 
-export function CompanySidebar() {
-    const location = useLocation();
+export default function StudentSidebar() {
+  const location = useLocation();
 
   return (
     <Sidebar>

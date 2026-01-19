@@ -1,14 +1,13 @@
-// src/layouts/AdminLayout.jsx
-import React from "react";
-import { Outlet } from "react-router-dom";
-import { AdminSidebar } from "./components/admin-sidebar";
-import { SidebarProvider, SidebarInset } from "../components/ui/sidebar";
 
-export default function AdminLayout() {
+import { Outlet } from "react-router-dom";
+import { SidebarProvider, SidebarInset } from "../components/ui/sidebar";
+import StudentSidebar  from "../layouts/components/student-sidebar";
+
+export default function StudentLayout() {
   return (
     <SidebarProvider>
       {/* Student Sidebar */}
-      <AdminSidebar />
+      <StudentSidebar />
 
       {/* Main content area */}
       <SidebarInset>
