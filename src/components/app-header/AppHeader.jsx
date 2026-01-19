@@ -24,7 +24,7 @@ export function AppHeader({ title, description, children }) {
   function logout(){
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate('/');
+    navigate("/", { replace: true });
   }
   return (
     <header className="sticky top-0 z-10 flex h-auto min-h-16 flex-col items-start gap-4 border-b bg-background px-4 py-4 sm:flex-row sm:items-center sm:px-6">
