@@ -58,7 +58,7 @@ const LoginPage = () => {
 
       switch (formData.role) {
         case "STUDENT":
-          navigate("/dashboard/student");
+          navigate("/student/dashboard");
           break;
         case "TPO":
           navigate("/tpo");
