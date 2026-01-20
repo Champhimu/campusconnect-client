@@ -83,7 +83,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black-50 via-white to-purple-50 p-4">
       <Card className="w-full max-w-md shadow-xl rounded-2xl">
         <CardHeader className="text-center">
           <div className="inline-flex w-16 h-16 bg-blue-600 rounded-2xl items-center justify-center mx-auto mb-3">
