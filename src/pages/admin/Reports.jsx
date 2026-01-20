@@ -1,32 +1,12 @@
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../components/ui/card";
+import { ChartContainer, ChartTooltipContent } from "../../components/ui/chart";
+import { Bar, BarChart as RechartsBarChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from "recharts";
 import { AppHeader } from "../../components/app-header/AppHeader";
 import { Button } from "../../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/ui/table";
-
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
 import { Download } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 
-/* Dummy Data */
 const branchPlacementData = [
   { name: "CSE", placed: 80 },
   { name: "IT", placed: 70 },
@@ -53,42 +33,44 @@ export default function ReportsPage() {
 
         {/* Branch-wise Report */}
         <Card>
-          <CardHeader className="flex-row items-center justify-between">
+          <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Branch-wise Report</CardTitle>
-              <CardDescription>
-                Number of students placed per branch
-              </CardDescription>
+              <CardDescription>Number of students placed per branch.</CardDescription>
             </div>
-
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Export PDF
             </Button>
           </CardHeader>
 
-          <CardContent className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={branchPlacementData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="placed" fill="#2563eb" radius={4} />
-              </BarChart>
-            </ResponsiveContainer>
+          <CardContent>
+            <ChartContainer config={{}} className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height={300}>
+                <RechartsBarChart data={branchPlacementData}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <RechartsTooltip content={<ChartTooltipContent />} />
+                 <Bar
+                    dataKey="placed"
+                    radius={4}
+                    fill="hsl(var(--primary))"
+                  />
+                </RechartsBarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
 
         {/* Company-wise Report */}
         <Card>
-          <CardHeader className="flex-row items-center justify-between">
+          <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle>Company-wise Report</CardTitle>
               <CardDescription>
-                Students selected and average salary
+                Students selected and average salary per company.
               </CardDescription>
             </div>
-
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Export CSV
@@ -104,13 +86,10 @@ export default function ReportsPage() {
                   <TableHead>Average Salary</TableHead>
                 </TableRow>
               </TableHeader>
-
               <TableBody>
                 {companyReportData.map((row) => (
                   <TableRow key={row.company}>
-                    <TableCell className="font-medium">
-                      {row.company}
-                    </TableCell>
+                    <TableCell>{row.company}</TableCell>
                     <TableCell>{row.selected}</TableCell>
                     <TableCell>{row.avgSalary}</TableCell>
                   </TableRow>
