@@ -79,7 +79,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="relative z-20 text-center text-gray-400 text-sm py-4">
-        © 2026 OPMS. All rights reserved.
+        © 2028 OPMS. All rights reserved.
       </footer>
 
       {/* Custom styles for stars */}
