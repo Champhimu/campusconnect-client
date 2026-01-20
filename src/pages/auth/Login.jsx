@@ -155,6 +155,14 @@ const LoginPage = () => {
           >
             {isLoading ? "Logging in..." : <><LogIn /> Login</>}
           </Button>
+
+           {/* Sign up link */}
+          <p className="text-center text-sm mt-6">
+            Don’t have an account?{' '}
+            <Button variant="link" onClick={() => navigate('/requestTrial')}>
+              Request here
+            </Button>
+          </p>
         </CardContent>
       </Card>
     </div>
