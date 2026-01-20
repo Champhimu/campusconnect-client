@@ -58,7 +58,7 @@ const FormItem = React.forwardRef(({ className = "", ...props }, ref) => {
 FormItem.displayName = "FormItem"
 
 /* ---------------- FORM LABEL ---------------- */
-const FormLabel = React.forwardRef(({ className = "", ...props }, ref) => {
+const FormLabel = React.forwardRef(({ className = "", required, ...props }, ref) => {
   const { error, formItemId } = useFormField()
 
   return (
@@ -66,6 +66,7 @@ const FormLabel = React.forwardRef(({ className = "", ...props }, ref) => {
       ref={ref}
       htmlFor={formItemId}
       className={`${error ? "text-destructive" : ""} ${className}`}
+      required={required}
       {...props}
     />
   )

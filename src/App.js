@@ -82,14 +82,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/requestTrial" element={<RequestAccessPage />} />
 
-        {/* DASHBOARDS */}
-        <Route path="/dashboard/student" element={
-          <ProtectedRoute allowedRoles={["STUDENT"]}>
-            <StudentDashboard />
-          </ProtectedRoute>
-        } />
-        <Route
-          path="/company"
+        <Route path="/company"
           element={
             <ProtectedRoute allowedRoles={["COMPANY"]}>
               <CompanyLayout />
@@ -104,14 +97,8 @@ function App() {
           <Route path="invites" element={<CollegeInvites />} />
         </Route>
 
-        {/* ADMIN */}
-        <Route path="/dashboard/admin" element={
-          <ProtectedRoute allowedRoles={["CADMIN"]}>
-            <AdminDashboard />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/tpo" element={
+        <Route path="/tpo" 
+        element={
           <ProtectedRoute allowedRoles={["TPO"]}>
             <TpoLayout />
           </ProtectedRoute>
@@ -126,8 +113,7 @@ function App() {
         </Route>
 
 
-        <Route
-          path="/student"
+        <Route path="/student"
           element={
             <ProtectedRoute allowedRoles={["STUDENT"]}>
               <StudentLayout />
@@ -149,7 +135,12 @@ function App() {
         </Route>
 
       {/* ADMIN ONLY */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" 
+        element={
+            <ProtectedRoute allowedRoles={["STUDENT"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }>
            <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
              <Route path="companies" element={<AdminCompaniesPage/>} />
