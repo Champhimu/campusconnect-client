@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
+/* Landing page */
+import LandingPage from "./pages/LandingPage";
 /* AUTH */
 import LoginPage from "./pages/auth/Login";
 import RequestAccessPage from "./pages/auth/RequestAccessForm";
@@ -75,8 +77,9 @@ function App() {
     <Router>
       <Routes>
 
+        <Route path="/" element={<LandingPage />} />
         {/* AUTH */}
-        <Route path="/" element={redirectToDashboard()} />
+        <Route path="/login" element={redirectToDashboard()} />
         <Route path="/request-trial" element={<RequestAccessPage />} />
 
         <Route path="/forgot-password" element={<ForgotPassword />} />

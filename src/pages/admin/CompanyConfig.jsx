@@ -1,3 +1,4 @@
+import React from "react";
 import { AppHeader } from "../../components/app-header/AppHeader";
 import { Badge } from "../../components/ui/badge";
 import {
@@ -25,52 +26,54 @@ export default function CompanyConfigPage() {
           <Card>
             <CardHeader>
               <CardTitle className="font-headline">
-                {company?.name}
+                {company.name}
               </CardTitle>
-              <CardDescription>
-                {job?.title}
-              </CardDescription>
+              <CardDescription>{job.title}</CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-4">
-              {/* Eligibility */}
+              {/* Eligibility Criteria */}
               <div>
                 <h4 className="font-semibold text-sm mb-2">
                   Eligibility Criteria
                 </h4>
-                <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside">
                   <li>
-                    Minimum CGPA:
-                    <span className="ml-1 font-medium text-foreground">
+                    Minimum CGPA:{" "}
+                    <span className="font-medium text-foreground">
                       7.5
                     </span>
                   </li>
                   <li>
-                    Maximum Backlogs:
-                    <span className="ml-1 font-medium text-foreground">
+                    Maximum Backlogs:{" "}
+                    <span className="font-medium text-foreground">
                       0
                     </span>
                   </li>
                 </ul>
               </div>
 
-              {/* Branches */}
+              {/* Allowed Branches */}
               <div>
                 <h4 className="font-semibold text-sm mb-2">
                   Allowed Branches
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Computer Science</Badge>
-                  <Badge variant="secondary">Information Technology</Badge>
+                  <Badge variant="secondary">
+                    Computer Science
+                  </Badge>
+                  <Badge variant="secondary">
+                    Information Technology
+                  </Badge>
                 </div>
               </div>
 
-              {/* Academic Years */}
+              {/* Allowed Academic Years */}
               <div>
                 <h4 className="font-semibold text-sm mb-2">
                   Allowed Academic Years
                 </h4>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary">2025</Badge>
                 </div>
               </div>
@@ -80,12 +83,12 @@ export default function CompanyConfigPage() {
                 <h4 className="font-semibold text-sm mb-2">
                   Offer Rules
                 </h4>
-                <p className="text-sm text-muted-foreground">
-                  Single Offer Allowed
-                </p>
+                <Badge>Single Offer Allowed</Badge>
               </div>
             </CardContent>
           </Card>
+
+        
         </div>
       </main>
     </div>
