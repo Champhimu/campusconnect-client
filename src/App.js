@@ -27,7 +27,7 @@ import CompanyJobs from "./pages/company/Jobs";
 import CompanyProfile from "./pages/company/Profile";
 import ApplicantsPage from "./pages/company/Applicants";
 import CollegeInvites from "./pages/company/CollegeInvites";
-
+import CompanyNotificationsPage from "./pages/company/notifications";
 
 // Layouts
 import StudentLayout from "./layouts/StudentLayout";
@@ -102,6 +102,7 @@ function App() {
           <Route path="profile" element={<CompanyProfile />} />
           <Route path="applicants" element={<ApplicantsPage />} />
           <Route path="invites" element={<CollegeInvites />} />
+          <Route path="notifications" element={<CompanyNotificationsPage />} />
         </Route>
 
         {/* ADMIN */}
