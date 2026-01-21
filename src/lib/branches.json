@@ -1,0 +1,12 @@
+[
+  { "value": "mca", "label": "MCA" },
+  { "value": "bca", "label": "BCA" },
+  { "value": "cse", "label": "Computer Science" },
+  { "value": "it", "label": "Information Technology" },
+  { "value": "ece", "label": "Electronics" },
+  { "value": "eee", "label": "Electrical Engineering" },
+  { "value": "me", "label": "Mechanical" },
+  { "value": "ce", "label": "Civil Engineering" },
+  { "value": "ba", "label": "BA" },
+  { "value": "bsc", "label": "BSc" }
+]

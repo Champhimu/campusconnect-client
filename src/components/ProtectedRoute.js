@@ -1,20 +1,21 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  if (!user) {
-    // Not logged in
-    return <Navigate to="/" replace />;
+const ProtectedRoute = ({ allowedRoles, children }) => {
+  const { user, token } = useSelector((state) => state.auth);
+  
+  // Not logged in
+  if (!token || !user) {
+    return <Navigate to="/login" replace />;
   }
 
+  // Logged in but role not allowed
   if (!allowedRoles.includes(user.role)) {
-    // Logged in but role not allowed
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />; // or unauthorized
   }
 
-  // User allowed
+  // Allowed
   return children;
 };
 

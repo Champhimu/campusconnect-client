@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-
+import { useEffect } from "react";
 /* Landing page */
 import LandingPage from "./pages/LandingPage";
 /* AUTH */
@@ -52,26 +52,38 @@ import CompanyConfigPage from "./pages/admin/CompanyConfig";
 import ReportsPage from "./pages/admin/Reports";
 import AnnouncementsPage from "./pages/admin/Announcements";
 
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentialsFromStorage } from "./redux/slices/authSlice";
+import { ToastProvider, ToastViewport } from './components/ui/toast';
+
 function App() {
+  const dispatch = useDispatch();
 
-  const redirectToDashboard = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return <LoginPage />; // Not logged in → show login
+  useEffect(() => {
+    dispatch(setCredentialsFromStorage());
+  }, [dispatch]);
 
-    // Logged in → redirect based on role
-    switch (user.role) {
-      case "STUDENT":
-        return <Navigate to="/student" replace />;
-      case "COMPANY":
-        return <Navigate to="/company" replace />;
-      case "CADMIN":
-        return <Navigate to="/admin" replace />;
-      case "TPO":
-        return <Navigate to="/tpo" replace />;
-      default:
-        return <LoginPage />;
-    }
-  };
+  const LoginRedirect = () => {
+  const { user, token } = useSelector((state) => state.auth);
+
+  if (!token || !user) {
+    return <LoginPage />;
+  }
+
+  switch (user.role) {
+    case "STUDENT":
+      return <Navigate to="/student" replace />;
+    case "COMPANY":
+      return <Navigate to="/company" replace />;
+    case "CADMIN":
+      return <Navigate to="/admin" replace />;
+    case "TPO":
+      return <Navigate to="/tpo" replace />;
+    default:
+      return <LoginPage />;
+  }
+};
+
 
   return (
     <Router>
@@ -79,7 +91,7 @@ function App() {
 
         <Route path="/" element={<LandingPage />} />
         {/* AUTH */}
-        <Route path="/login" element={redirectToDashboard()} />
+        <Route path="/login" element={<LoginRedirect />} />
         <Route path="/request-trial" element={<RequestAccessPage />} />
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -140,7 +152,7 @@ function App() {
       {/* ADMIN ONLY */}
         <Route path="/admin" 
         element={
-            <ProtectedRoute allowedRoles={["STUDENT"]}>
+            <ProtectedRoute allowedRoles={["CADMIN"]}>
               <AdminLayout />
             </ProtectedRoute>
           }>
