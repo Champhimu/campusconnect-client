@@ -15,7 +15,7 @@ import {
 import { ROLES } from "../../utils/roles";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/slices/authSlice";
-import { clearError } from "../../redux/slices/adminSlice";
+import { clearError } from "../../redux/slices/admin/userMgmtSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();

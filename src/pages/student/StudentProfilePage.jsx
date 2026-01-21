@@ -31,11 +31,11 @@ const StudentProfilePage = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Name</Label>
-                                    <Input id="name" defaultValue="Alex Doe" />
+                                    <Input id="name" defaultValue="Alex Doe" readOnly />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" defaultValue="alex.doe@example.com" />
+                                    <Input id="email" type="email" defaultValue="alex.doe@example.com" readOnly />
                                 </div>
                             </div>
                         </section>
@@ -53,10 +53,6 @@ const StudentProfilePage = () => {
                                 </div>
                             </div>
                         </section>
-                        <Button>
-                            <Pen className="mr-2 h-4 w-4" />
-                            Save Changes
-                        </Button>
                     </CardContent>
                 </Card>
             </main>

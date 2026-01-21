@@ -54,7 +54,6 @@ import AnnouncementsPage from "./pages/admin/Announcements";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentialsFromStorage } from "./redux/slices/authSlice";
-import { ToastProvider, ToastViewport } from './components/ui/toast';
 
 function App() {
   const dispatch = useDispatch();
@@ -138,14 +137,14 @@ function App() {
           {/* Student Dashboard */}
           <Route index element={<StudentDashboard />} />
           <Route path="profile" element={<StudentProfilePage />} />
-          <Route path="/student/jobs" element={<Jobs />} />
+          <Route path="jobs" element={<Jobs />} />
           <Route path="application-status" element={<ApplicationStatusPage />} />
           <Route path="companies" element={<StudentCompaniesPage />} />
           <Route path="notifications" element={<StudentNotificationsPage />} />
           <Route path="placement-history" element={<PlacementHistoryPage />} />
-          <Route path="/student/resume-score" element={<ResumeEnhancer />} />
-          <Route path="/student/resume-score" element={<ResumeScore />} />
-          <Route path="/student/resume" element={<ResumeAndSkillsPage />} />
+          <Route path="resume-score" element={<ResumeEnhancer />} />
+          <Route path="resume-score" element={<ResumeScore />} />
+          <Route path="resume" element={<ResumeAndSkillsPage />} />
 
         </Route>
 
