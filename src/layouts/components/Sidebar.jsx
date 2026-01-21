@@ -12,7 +12,7 @@ import {
 const menuItems = [
   { path: "/company", icon: LayoutDashboard, label: "Dashboard" },
   { path: "/company/profile", icon: Building, label: "Company Profile" },
-  { path: "/company/jobs", icon: Briefcase, label: "Job Postings" },
+  { path: "/company/jobs", icon: Briefcase, label:"Active Jobs" },
   { path: "/company/applicants", icon: Users, label: "Applicants" },
   { path: "/company/invites", icon: MailPlus, label: "Institute Invites" },
 ];
