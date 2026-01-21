@@ -510,8 +510,8 @@ const RequestAccessPage = () => {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-500 mt-6" onClick={() => navigate('/')}>
-          Already have an account? <a href="#" className="text-blue-600 font-medium hover:underline">Login here</a>
+        <p className="text-center text-sm text-gray-500 mt-6" onClick={() => navigate('/login')}>
+          Already have an account? <a href="/login" className="text-blue-600 font-medium hover:underline">Login here</a>
         </p>
       </div>
     </div>
