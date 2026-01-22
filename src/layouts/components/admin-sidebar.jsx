@@ -34,11 +34,25 @@ const menuItems = [
 export function AdminSidebar() {
   const location = useLocation();
 
+ const user = JSON.parse(localStorage.getItem("user")) || {};
+
   return (
     <Sidebar>
       {/* Header */}
       <SidebarHeader>
         <Logo />
+         <div className="mt-4 rounded-md bg-muted p-3">
+  <p className="text-sm font-medium">
+    {user.name || "Admin Name"}
+  </p>
+  <p className="text-xs text-muted-foreground">
+    {user.role || "ADMIN"}
+  </p>
+  <p className="text-xs text-muted-foreground">
+    {user.instituteName || "Institute Name"}
+  </p>
+</div>
+
       </SidebarHeader>
 
       {/* Main menu */}
