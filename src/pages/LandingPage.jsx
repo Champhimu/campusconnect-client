@@ -65,7 +65,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed">
-            "Simplifying campus placements by connecting students, training & placement officers, and recruiters on one smart platform — faster, transparent, and stress‑free"
+            "Simplifying campus placements by connecting students, training & placement officers, and recruiters on one smart platform — faster, transparent, and stress-free"
           </p>
 
           <button
@@ -79,7 +79,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="relative z-20 text-center text-gray-400 text-sm py-4">
-        © 2028 OPMS. All rights reserved.
+        © 2026 OPMS. All rights reserved.
       </footer>
 
       {/* Custom styles for stars */}
