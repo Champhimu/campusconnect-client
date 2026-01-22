@@ -24,6 +24,7 @@ import {
   LifeBuoy,
   Settings,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 /* Sidebar menu items */
 const menuItems = [
@@ -39,9 +40,8 @@ const menuItems = [
 
 export default function StudentSidebar() {
   const location = useLocation();
-
-  // user data (safe fallback)
-  const user = JSON.parse(localStorage.getItem("user")) || {};
+  const auth = useSelector((state) => state.auth);
+  const { user } = auth;
 
   return (
     <Sidebar>
@@ -58,7 +58,7 @@ export default function StudentSidebar() {
             {user.role || "STUDENT"}
           </p>
           <p className="text-xs text-muted-foreground">
-            {user.instituteName || "Institute Name"}
+            {user.organization.collegeName || "Institute Name"}
           </p>
         </div>
       </SidebarHeader>

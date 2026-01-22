@@ -21,6 +21,7 @@ import {
   LifeBuoy,
   FileCog,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const menuItems = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
@@ -33,8 +34,8 @@ const menuItems = [
 
 export function AdminSidebar() {
   const location = useLocation();
-
- const user = JSON.parse(localStorage.getItem("user")) || {};
+  const auth = useSelector((state) => state.auth);
+  const { user } = auth;
 
   return (
     <Sidebar>
@@ -49,7 +50,7 @@ export function AdminSidebar() {
     {user.role || "ADMIN"}
   </p>
   <p className="text-xs text-muted-foreground">
-    {user.instituteName || "Institute Name"}
+    {user.organization.collegeName || "Institute Name"}
   </p>
 </div>
 

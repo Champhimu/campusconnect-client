@@ -23,10 +23,13 @@ import {
 } from "../../components/ui/sidebar";
 
 import Logo from "../../components/logo/Logo";
+import { useSelector } from "react-redux";
 
 export function TpoSidebar() {
   const location = useLocation();
-
+  const auth = useSelector((state) => state.auth);
+  const { user } = auth;
+  
   const menuItems = [
     { to: "/tpo", icon: LayoutDashboard, label: "Dashboard" },
     { to: "/tpo/students", icon: Users, label: "Students" },
@@ -36,8 +39,6 @@ export function TpoSidebar() {
     { to: "/tpo/placement-tracker", icon: FileCheck, label: "Placement Tracker" },
     { to: "/tpo/notifications", icon: Bell, label: "Notifications" },
   ];
-
-  const user = JSON.parse(localStorage.getItem("user")) || {};
 
   return (
     <Sidebar>
@@ -53,7 +54,7 @@ export function TpoSidebar() {
             {user.role || "TPO"}
           </p>
           <p className="text-xs text-muted-foreground">
-            {user.instituteName || "Institute Name"}
+            {user.organization.collegeName || "Institute Name"}
           </p>
         </div>
         

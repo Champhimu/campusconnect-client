@@ -6,7 +6,7 @@ export const fetchAcceptedCollaborations = createAsyncThunk(
   "collaborations/fetchAccepted",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get("/collaborations/accepted");
+      const res = await axiosInstance.get("/company/collaborations/accepted");
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -196,4 +196,3 @@ const collaborationsSlice = createSlice({
 
 export const { clearMessage } = collaborationsSlice.actions;
 export default collaborationsSlice.reducer;
-
