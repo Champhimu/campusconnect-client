@@ -152,6 +152,27 @@ const LoginPage = () => {
             )}
           </div>
 
+          
+          {/* 🔹 Remember me & Forgot password */}
+          <div className="flex items-center justify-between mt-3 mb-4 text-sm">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                className="rounded border-gray-300 text-blue-500/50 focus:ring-blue-500"
+              />
+              <span className="text-white-600">Remember me</span>
+            </label>
+
+
+             <p className="text-center text-sm mt-1">
+
+            <Button variant="link" onClick={() =>   navigate('/forgot-password')}
+               className="no-underline hover:no-underline p-0 h-auto">
+              Forgot Password?
+            </Button>
+          </p>
+          </div>
+
           <Button
             onClick={handleSubmit}
             disabled={loading}
@@ -163,7 +184,8 @@ const LoginPage = () => {
            {/* Sign up link */}
           <p className="text-center text-sm mt-6">
             Don’t have an account?{' '}
-            <Button variant="link" onClick={() => navigate('/requestTrial')}>
+            <Button variant="link" onClick={() => navigate('/requestTrial')}
+               className="no-underline hover:no-underline p-0 h-auto">
               Request here
             </Button>
           </p>
