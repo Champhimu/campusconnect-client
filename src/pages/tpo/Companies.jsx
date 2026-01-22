@@ -15,6 +15,8 @@ import { Badge } from "../../components/ui/badge";
 import axiosInstance from "../../api/axiosInstance.js";
 import { AppHeader } from "../../components/app-header/AppHeader";
 import { companies, jobs } from "../../lib/data.js";
+import { EmptyState } from "../../components/empty-state.js";
+
 // import { jobs } from "../../lib/data.js";
 import { PlaceHolderImages } from "../../lib/placeholder-images.js";
 import {
@@ -27,12 +29,15 @@ import {
   XCircle,
   Briefcase,
   CircleDollarSign,
-  Upload
+  Upload,
+  Inbox
 } from "lucide-react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAvailableCompanies } from "../../redux/slices/collaborationsSlice";
 import { useNavigate } from "react-router-dom";
+import { fetchSubmittedDrives } from "../../redux/slices/companyDriveSlice.js";
+import { setJobForm } from "../../redux/jobFormSlice.js";
 
 function TPOCompaniesPage() {
   const dispatch = useDispatch();
@@ -42,6 +47,7 @@ function TPOCompaniesPage() {
     (state) => state.collaborations
   );
   const { user } = useSelector((state) => state.auth);
+  const { drives } = useSelector((state) => state.companyDrives);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hiringRequests, setHiringRequests] = useState(initialHiringRequests);
@@ -52,7 +58,8 @@ function TPOCompaniesPage() {
 
   useEffect(() => {
     dispatch(fetchAvailableCompanies());
-    console.log("Fetched available companies for collaboration", availableCompanies, companies);
+    dispatch(fetchSubmittedDrives());
+    console.log("Fetched available companies for collaboration", availableCompanies, drives);
   }, [dispatch]);
 
   const handleReject = (id) => {
@@ -63,6 +70,18 @@ function TPOCompaniesPage() {
   };
 
   const handleApprove = (request) => {
+    dispatch(setJobForm({
+      role: request.role,
+      packageLPA: request.packageLPA,
+      eligibilityCriteria: {
+        minCGPA: request.eligibilityCriteria.minCGPA,
+        maxBacklogs: request.eligibilityCriteria.maxBacklogs,
+        allowedBranches: request.eligibilityCriteria.allowedBranches.join(", "),
+      },
+      driveDate: request.driveDate,
+      driveMode: request.jobDescription,
+      jobType: request.jobType,
+    }));
     setSelectedRequest(request);
     setApproveModalOpen(true);
   };
@@ -81,13 +100,13 @@ function TPOCompaniesPage() {
   };
 
   // Clear selection if user manually clicks the tab
-const handleTabChange = (value) => {
-  setActiveTab(value);
-  if (value === "collaboration-requests" && !selectedForCollaboration?.viaButton) {
-    // clear previous selection if not coming from All Companies
-    setSelectedForCollaboration(null);
-  }
-};
+  const handleTabChange = (value) => {
+    setActiveTab(value);
+    if (value === "collaboration-requests" && !selectedForCollaboration?.viaButton) {
+      // clear previous selection if not coming from All Companies
+      setSelectedForCollaboration(null);
+    }
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -101,7 +120,7 @@ const handleTabChange = (value) => {
           </TabsList>
           <TabsContent value="all-companies" className="mt-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {availableCompanies.map(company => {
+              {availableCompanies && availableCompanies.length > 0 && availableCompanies.map(company => {
                 // const logo = PlaceHolderImages.find(p => p.id === company.logo);
                 // const companyJobs = jobs.filter(j => j.companyId === company.id);
                 return (
@@ -138,6 +157,14 @@ const handleTabChange = (value) => {
                 );
               })}
             </div>
+            {availableCompanies && availableCompanies.length === 0 && (
+              <div className="py-10 w-full">
+                <EmptyState
+                  icon={Briefcase}
+                  title="No Companies Added Yet"
+                  description="You have collaborated with all registered companies. Go to the 'Send Invitations' tab to add companies and start inviting them."
+                />
+              </div>)}
           </TabsContent>
           <TabsContent value="collaboration-requests" className="mt-6">
             <Card>
@@ -152,29 +179,36 @@ const handleTabChange = (value) => {
           </TabsContent>
           <TabsContent value="hiring-requests" className="mt-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {hiringRequests.map(request => {
-                const logo = PlaceHolderImages.find(p => p.id === request.logo);
+              {drives && drives?.map(request => {
                 return (
-                  <Card key={request.id}>
-                    <CardHeader className="flex-row items-start gap-4">
-                      {logo && <img src={logo.imageUrl} alt={request.companyName} width={48} height={48} className="rounded-lg" data-ai-hint={logo.imageHint} />}
+                  <Card key={request._id}>
+                    <CardHeader className="flex flex-row items-start gap-4">
+                      <img src={request.companyId.logoUrl} alt={request.companyId.companyName} width={48} height={48} className="rounded-lg" data-ai-hint={request.companyId.companyName} />
                       <div>
-                        <CardTitle className="font-headline text-xl">{request.companyName}</CardTitle>
+                        <CardTitle className="font-headline text-xl">{request.companyId.companyName}</CardTitle>
                         <CardDescription>{request.campusName}</CardDescription>
                       </div>
                       <Badge variant={
-                        request.status === 'Approved' ? 'default' :
-                          request.status === 'Rejected' ? 'destructive' : 'secondary'
+                        request.status === 'SUBMITTED' ? 'default' :
+                          request.status === 'REJECTED' ? 'destructive' : 'secondary'
                       } className="ml-auto">{request.status}</Badge>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-1">
-                        <h4 className="font-semibold text-sm flex items-center gap-2"><Briefcase /> {request.jobRole}</h4>
-                        <p className="font-semibold text-sm flex items-center gap-2"><CircleDollarSign /> {request.ctc}</p>
+                        <h4 className="font-semibold text-sm flex items-center gap-2"><Briefcase /> {request.role}</h4>
+                        <p className="font-semibold text-sm flex items-center gap-2"><CircleDollarSign /> {request.packageLPA} LPA</p>
                       </div>
-                      <p className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md border">{request.message}</p>
+                      <p className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md border">
+                        {
+                          request.jobDescription
+                            ? request.jobDescription.length > 130
+                              ? request.jobDescription.slice(0, 210) + "..."
+                              : request.jobDescription
+                            : "No information provided."
+                        }
+                      </p>
                     </CardContent>
-                    {request.status === 'Pending' && (
+                    {request.status === 'SUBMITTED' && (
                       <CardFooter className="gap-2">
                         <Button variant="outline" className="w-full" onClick={() => handleReject(request.id)}>
                           <XCircle className="mr-2" /> Reject
@@ -188,6 +222,16 @@ const handleTabChange = (value) => {
                 )
               })}
             </div>
+            {drives.length === 0 && (
+              <div className="py-10 w-full">
+                <EmptyState
+                  className="w-full"
+                  icon={Inbox}
+                  title="No Hiring Requests Yet"
+                  description="There are currently no hiring requests from companies. Once a company sends a request, it will appear here."
+                />
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </main>
@@ -484,7 +528,8 @@ ${user?.email || "{{TPO_EMAIL}}"}`
 // ------------------- Approve Hiring Request Dialog -------------------
 function ApproveRequestDialog({ open, onOpenChange, request, onSuccess }) {
   const [step, setStep] = useState("form");
-
+  const navigate = useNavigate();
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     onSuccess();
@@ -507,7 +552,7 @@ function ApproveRequestDialog({ open, onOpenChange, request, onSuccess }) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="sm:justify-center">
-            <Button>
+            <Button onClick={() => {navigate('/tpo/jobs/')}}>
               <PlusCircle className="mr-2" /> Create Job Posting
             </Button>
           </DialogFooter>

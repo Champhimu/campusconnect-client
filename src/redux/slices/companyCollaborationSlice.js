@@ -24,7 +24,8 @@ export const fetchPendingCollaborations = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get("/company/collaborations/pending");
-      return res.data.data;
+      console.log("pending",res.data);
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message);
     }
@@ -32,7 +33,7 @@ export const fetchPendingCollaborations = createAsyncThunk(
 );
 
 // Accept collaboration
-export const acceptCollaboration = createAsyncThunk(
+export const acceptCompanyCollaboration = createAsyncThunk(
   "collaborations/accept",
   async (collaborationId, { rejectWithValue }) => {
     try {
@@ -47,7 +48,7 @@ export const acceptCollaboration = createAsyncThunk(
 );
 
 // Reject collaboration
-export const rejectCollaboration = createAsyncThunk(
+export const rejectCompanyCollaboration = createAsyncThunk(
   "collaborations/reject",
   async ({ collaborationId, reason }, { rejectWithValue }) => {
     try {
@@ -82,8 +83,8 @@ export const inviteTPO = createAsyncThunk(
    SLICE
 ======================= */
 
-const collaborationSlice = createSlice({
-  name: "collaborations",
+const companyCollaborationSlice = createSlice({
+  name: "companyCollaborations",
   initialState: {
     accepted: [],
     pending: [],
@@ -112,7 +113,7 @@ const collaborationSlice = createSlice({
       })
 
       // ACCEPT
-      .addCase(acceptCollaboration.fulfilled, (state, action) => {
+      .addCase(acceptCompanyCollaboration.fulfilled, (state, action) => {
         state.pending = state.pending.filter(
           (c) => c._id !== action.payload._id
         );
@@ -120,12 +121,16 @@ const collaborationSlice = createSlice({
       })
 
       // REJECT
-      .addCase(rejectCollaboration.fulfilled, (state, action) => {
-        state.pending = state.pending.filter(
-          (c) => c._id !== action.payload._id
-        );
-      });
+      .addCase(rejectCompanyCollaboration.fulfilled, (state, action) => {
+  // action.payload is already the rejected collaboration object
+  const rejectedCollab = action.payload;
+
+  // Make sure pending is an array
+  if (!Array.isArray(state.pending)) state.pending = [];
+
+  state.pending = state.pending.filter((c) => c._id !== rejectedCollab._id);
+});
   }
 });
 
-export default collaborationSlice.reducer;
+export default companyCollaborationSlice.reducer;

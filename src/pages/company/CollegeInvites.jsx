@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Badge } from "../../components/ui/badge";
 import { PlusCircle, Send, MoreHorizontal, FileText, CheckCircle, XCircle, Paperclip, Upload, Inbox } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu";
 import { Separator } from "../../components/ui/separator";
@@ -16,6 +16,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 import { useToast } from "../../hooks/use-toast";
 import { EmptyState } from "../../components/empty-state";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAcceptedCollaborations, fetchPendingCollaborations, acceptCompanyCollaboration, rejectCompanyCollaboration } from "../../redux/slices/companyCollaborationSlice";
+import { submitDrive } from "../../redux/slices/companyDriveSlice";
 
 const initialIncomingInvites = [
   {
@@ -51,15 +54,38 @@ export default function InstituteInvitesPage() {
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
   const [selectedInvite, setSelectedInvite] = useState(null);
 
-  const handleInviteAction = (id, newStatus) => {
-    setIncomingInvites(invites =>
-      invites.map(invite =>
-        invite.id === id ? { ...invite, status: newStatus } : invite
-      )
-    );
+  const dispatch = useDispatch();
+  const { pending, loading } = useSelector(
+    (state) => state.companyCollaborations
+  );
+
+  const handleInviteAction = async (id, newStatus) => {
+    if (newStatus === "Accepted") {
+      const resultAction = await dispatch(acceptCompanyCollaboration({ collaborationId: id }));
+
+      if (acceptCompanyCollaboration.fulfilled.match(resultAction)) {
+        alert("Collaboration accepted successfully!");
+      } else {
+        alert("Failed to accept collaboration: " + resultAction.error.message);
+      }
+    } else if (newStatus === "Rejected") {
+      const resultAction = await dispatch(rejectCompanyCollaboration({ collaborationId: id, reason: "Not suitable" }));
+      if (rejectCompanyCollaboration.fulfilled.match(resultAction)) {
+        alert("Collaboration rejected successfully");
+      } else {
+        console.error("Failed to reject collaboration");
+      }
+    }
   };
 
-  const handlePreview = invite => {
+
+
+  useEffect(() => {
+    dispatch(fetchPendingCollaborations());
+    console.log(pending)
+  }, [dispatch]);
+
+  const handlePreview = (invite) => {
     setSelectedInvite(invite);
     setPreviewModalOpen(true);
   };
@@ -174,7 +200,7 @@ export default function InstituteInvitesPage() {
                 <CardDescription>Review and respond to campus drive invitations from colleges.</CardDescription>
               </CardHeader>
               <CardContent>
-                {incomingInvites.length > 0 ? (
+                {pending.count > 0 && pending.data.length > 0 ? (
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -186,15 +212,25 @@ export default function InstituteInvitesPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {incomingInvites.map(invite => (
-                        <TableRow key={invite.id}>
-                          <TableCell className="font-medium">{invite.college}</TableCell>
-                          <TableCell>{invite.tpoName}</TableCell>
-                          <TableCell>{invite.date}</TableCell>
+                      {pending?.data?.map(invite => (
+                        <TableRow key={invite._id}>
+                          <TableCell className="font-medium">{invite.collegeName}</TableCell>
+                          <TableCell>{invite.requestedByUser?.name}</TableCell>
+                          <TableCell>
+                            {new Date(invite.requestedAt).toLocaleString("en-US", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true
+                            })}
+                          </TableCell>
+
                           <TableCell>
                             <Badge variant={
-                              invite.status === 'Accepted' ? 'default' :
-                                invite.status === 'Rejected' ? 'destructive' : 'secondary'
+                              invite.status === 'ACCEPTED' ? 'default' :
+                                invite.status === 'REJECTED' ? 'destructive' : 'secondary'
                             }>{invite.status}</Badge>
                           </TableCell>
                           <TableCell>
@@ -209,12 +245,12 @@ export default function InstituteInvitesPage() {
                                 <DropdownMenuItem onSelect={() => handlePreview(invite)}>
                                   <FileText className="mr-2 h-4 w-4" /> Preview
                                 </DropdownMenuItem>
-                                {invite.status === 'Pending' && (
+                                {invite.status === 'PENDING' && (
                                   <>
                                     <DropdownMenuItem onSelect={() => handleAccept(invite)}>
                                       <CheckCircle className="mr-2 h-4 w-4" /> Accept
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onSelect={() => handleInviteAction(invite.id, 'Rejected')}>
+                                    <DropdownMenuItem onSelect={() => handleInviteAction(invite.collaborationId, 'Rejected')}>
                                       <XCircle className="mr-2 h-4 w-4" /> Reject
                                     </DropdownMenuItem>
                                   </>
@@ -249,11 +285,7 @@ export default function InstituteInvitesPage() {
         open={acceptModalOpen}
         onOpenChange={setAcceptModalOpen}
         invite={selectedInvite}
-        onSuccess={() => {
-          if (selectedInvite) {
-            handleInviteAction(selectedInvite.id, "Accepted");
-          }
-        }}
+        onSuccess={() => handleInviteAction(selectedInvite.id, "Accepted")}
       />
     </div>
   );
@@ -264,32 +296,35 @@ function PreviewInviteDialog({ open, onOpenChange, invite }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="font-headline">
             Invitation Preview
           </DialogTitle>
           <DialogDescription>
-            This is the invitation email sent by {invite.tpoName} from{" "}
+            This is the invitation email sent by {invite.requestedByUser?.name} from {invite.collegeName}.
             {invite.college}.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 p-6 pt-0">
-          <div className="rounded-lg border p-4 space-y-4">
+        <div className="space-y-4 p-6 pt-0 flex-1 flex flex-col overflow-hidden">
+          <div className="rounded-lg border p-4 space-y-4 flex-1 flex flex-col overflow-hidden">
             <div>
               <p className="text-sm font-medium">
                 Subject: Campus Placement Invitation
               </p>
               <p className="text-sm text-muted-foreground">
-                From: {invite.tpoEmail}
+                From: {invite.requestedByUser?.email}
               </p>
             </div>
 
             <Separator />
-
-            <div className="text-sm space-y-4">
-              <p>Dear HR Team,</p>
+            {/* <div className="space-y-2 break-words whitespace-pre-wrap">
+  {message}
+</div> */}
+            <div className="space-y-2 overflow-y-auto break-words whitespace-pre-wrap p-2 thin-scrollbar">
+              {invite.message}
+              {/* <p>Dear HR Team,</p>
               <p>
                 We are pleased to invite your esteemed organization to our
                 campus for the upcoming placement season.
@@ -304,7 +339,7 @@ function PreviewInviteDialog({ open, onOpenChange, invite }) {
                 {invite.tpoName}
                 <br />
                 TPO, {invite.college}
-              </p>
+              </p> */}
             </div>
 
             <Separator />
@@ -329,21 +364,80 @@ function PreviewInviteDialog({ open, onOpenChange, invite }) {
   );
 }
 
-function AcceptInviteDialog({ open, onOpenChange, invite, onSuccess }) {
+function AcceptInviteDialog({ open, onOpenChange, invite }) {
+  const dispatch = useDispatch();
   const { toast } = useToast();
 
-  if (!invite) return null;
+  const [form, setForm] = useState({
+    role: "",
+    packageLPA: "",
+    eligibility: { minCGPA: "", maxBacklogs: "", allowedBranches: "" },
+    driveDate: "",
+    driveMode: "online",
+    jobDescription: "",
+    jobType: "fulltime",
+  });
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name.startsWith("eligibility.")) {
+      const key = name.split(".")[1];
+      setForm((prev) => ({
+        ...prev,
+        eligibility: { ...prev.eligibility, [key]: value },
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    toast({
-      title: "Campus Drive Created",
-      description: `Your drive for ${invite.college} has been scheduled.`
-    });
+    if (!invite) return;
 
-    onSuccess();
+    const payload = {
+      collaborationId: invite.collaborationId || invite.id,
+      role: form.role,
+      packageLPA: parseFloat(form.packageLPA),
+      eligibilityCriteria: {
+        minCGPA: parseFloat(form.eligibility.minCGPA),
+        maxBacklogs: parseInt(form.eligibility.maxBacklogs),
+        allowedBranches: form.eligibility.allowedBranches
+          .split(",")
+          .map((b) => b.trim()),
+      },
+      driveDate: form.driveDate,
+      driveMode: form.driveMode,
+      jobDescription: form.jobDescription,
+      jobType: form.jobType,
+    };
+
+    try {
+      const resultAction = await dispatch(submitDrive(payload));
+      if (submitDrive.fulfilled.match(resultAction)) {
+        toast({
+          title: "Campus Drive Created",
+          description: `Your drive for ${invite.collegeName} has been submitted.`,
+        });
+        onOpenChange(false); // Close modal
+      } else {
+        toast({
+          title: "Error",
+          description: resultAction.error.message || "Failed to submit drive",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to submit drive",
+        variant: "destructive",
+      });
+    }
   };
+
+  if (!invite) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -353,7 +447,7 @@ function AcceptInviteDialog({ open, onOpenChange, invite, onSuccess }) {
             Accept Invitation & Create Drive
           </DialogTitle>
           <DialogDescription>
-            Fill in the details for the campus drive at {invite.college}.
+            Fill in the details for the campus drive at {invite.collegeName}.
           </DialogDescription>
         </DialogHeader>
 
@@ -361,34 +455,77 @@ function AcceptInviteDialog({ open, onOpenChange, invite, onSuccess }) {
           onSubmit={handleSubmit}
           className="max-h-[70vh] overflow-y-auto px-6 py-4 space-y-6"
         >
+          {/* Role & Package */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label>Role</Label>
-              <Input placeholder="e.g. Software Engineer" required />
+              <Input
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                placeholder="e.g. Software Engineer"
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label>Package (LPA)</Label>
-              <Input placeholder="e.g. 12" required />
+              <Input
+                name="packageLPA"
+                type="number"
+                value={form.packageLPA}
+                onChange={handleChange}
+                placeholder="e.g. 12"
+                required
+              />
             </div>
           </div>
 
+          {/* Eligibility */}
           <div className="space-y-2">
             <Label>Eligibility Criteria</Label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <Input placeholder="Min. CGPA" required />
-              <Input placeholder="Max Backlogs" defaultValue="0" required />
-              <Input placeholder="Allowed Branches" required />
+              <Input
+                name="eligibility.minCGPA"
+                type="number"
+                step="0.01"
+                placeholder="Min. CGPA"
+                value={form.eligibility.minCGPA}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                name="eligibility.maxBacklogs"
+                type="number"
+                placeholder="Max Backlogs"
+                value={form.eligibility.maxBacklogs}
+                onChange={handleChange}
+                required
+              />
+              <Input
+                name="eligibility.allowedBranches"
+                placeholder="Allowed Branches (comma separated)"
+                value={form.eligibility.allowedBranches}
+                onChange={handleChange}
+                required
+              />
             </div>
           </div>
 
+          {/* Drive Date & Mode */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label>Drive Date</Label>
-              <Input type="date" required />
+              <Input
+                type="date"
+                name="driveDate"
+                value={form.driveDate}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label>Drive Mode</Label>
-              <Select required>
+              <Select name="driveMode" value={form.driveMode} onValueChange={(v) => setForm(prev => ({ ...prev, driveMode: v }))} required>
                 <SelectTrigger>
                   <SelectValue placeholder="Select mode" />
                 </SelectTrigger>
@@ -401,14 +538,26 @@ function AcceptInviteDialog({ open, onOpenChange, invite, onSuccess }) {
             </div>
           </div>
 
+          {/* Job Description */}
           <div className="space-y-2">
             <Label>Job Description</Label>
-            <Textarea rows={6} required />
+            <Textarea
+              name="jobDescription"
+              rows={6}
+              value={form.jobDescription}
+              onChange={handleChange}
+              required
+            />
           </div>
 
+          {/* Job Type */}
           <div className="space-y-2">
             <Label>Job Type</Label>
-            <RadioGroup defaultValue="fulltime" className="flex gap-4">
+            <RadioGroup
+              value={form.jobType}
+              onValueChange={(v) => setForm((prev) => ({ ...prev, jobType: v }))}
+              className="flex gap-4"
+            >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="fulltime" id="fulltime" />
                 <Label htmlFor="fulltime">Full-time</Label>

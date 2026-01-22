@@ -28,30 +28,30 @@ export const fetchPendingCollaborations = createAsyncThunk(
 );
 
 // Accept collaboration
-export const acceptCollaboration = createAsyncThunk(
-  "collaborations/accept",
-  async (collabId, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.patch(`/collaborations/${collabId}/accept`);
-      return res.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
+// export const acceptCollaboration = createAsyncThunk(
+//   "collaborations/accept",
+//   async (collabId, { rejectWithValue }) => {
+//     try {
+//       const res = await axiosInstance.patch(`/collaborations/${collabId}/accept`);
+//       return res.data;
+//     } catch (err) {
+//       return rejectWithValue(err.response?.data || err.message);
+//     }
+//   }
+// );
 
 // Reject collaboration
-export const rejectCollaboration = createAsyncThunk(
-  "collaborations/reject",
-  async ({ collabId, reason }, { rejectWithValue }) => {
-    try {
-      const res = await axiosInstance.patch(`/collaborations/${collabId}/reject`, { reason });
-      return res.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
+// export const rejectCollaboration = createAsyncThunk(
+//   "collaborations/reject",
+//   async ({ collabId, reason }, { rejectWithValue }) => {
+//     try {
+//       const res = await axiosInstance.patch(`/collaborations/${collabId}/reject`, { reason });
+//       return res.data;
+//     } catch (err) {
+//       return rejectWithValue(err.response?.data || err.message);
+//     }
+//   }
+// );
 
 // Send collaboration requests
 export const sendCollaborationRequests = createAsyncThunk(
@@ -140,30 +140,30 @@ const collaborationsSlice = createSlice({
         state.error = action.payload.message || action.payload;
       });
 
-    // Accept collaboration
-    builder
-      .addCase(acceptCollaboration.fulfilled, (state, action) => {
-        state.successMessage = action.payload.message;
-        // Move collaboration from pending to accepted
-        const collab = action.payload.data;
-        state.pending = state.pending.filter((c) => c._id !== collab._id);
-        state.accepted.unshift(collab);
-      })
-      .addCase(acceptCollaboration.rejected, (state, action) => {
-        state.error = action.payload.message || action.payload;
-      });
+    // // Accept collaboration
+    // builder
+    //   .addCase(acceptCollaboration.fulfilled, (state, action) => {
+    //     state.successMessage = action.payload.message;
+    //     // Move collaboration from pending to accepted
+    //     const collab = action.payload.data;
+    //     state.pending = state.pending.filter((c) => c._id !== collab._id);
+    //     state.accepted.unshift(collab);
+    //   })
+    //   .addCase(acceptCollaboration.rejected, (state, action) => {
+    //     state.error = action.payload.message || action.payload;
+    //   });
 
-    // Reject collaboration
-    builder
-      .addCase(rejectCollaboration.fulfilled, (state, action) => {
-        state.successMessage = action.payload.message;
-        // Remove from pending
-        const collab = action.payload.data;
-        state.pending = state.pending.filter((c) => c._id !== collab._id);
-      })
-      .addCase(rejectCollaboration.rejected, (state, action) => {
-        state.error = action.payload.message || action.payload;
-      });
+    // // Reject collaboration
+    // builder
+    //   .addCase(rejectCollaboration.fulfilled, (state, action) => {
+    //     state.successMessage = action.payload.message;
+    //     // Remove from pending
+    //     const collab = action.payload.data;
+    //     state.pending = state.pending.filter((c) => c._id !== collab._id);
+    //   })
+    //   .addCase(rejectCollaboration.rejected, (state, action) => {
+    //     state.error = action.payload.message || action.payload;
+    //   });
 
     // Send requests
     builder

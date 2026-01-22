@@ -29,15 +29,17 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
-import { MoreHorizontal } from "lucide-react";
+import { Inbox, MoreHorizontal } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchStudents } from "../../redux/slices/admin/userMgmtSlice";
 import branches from "../../lib/branches.json";
 import { StudentDialog } from "../../components/company/StudentDialog";
+import { SparrowLoader } from "../../components/sparrow-loader";
+import { EmptyState } from "../../components/empty-state";
 
 export default function TpoStudentsPage() {
   const dispatch = useDispatch();
-  const { students, error, success } = useSelector(state => state.admin);
+  const {students, loading } = useSelector(state => state.admin);
   const [modalMode, setModalMode] = useState("add");
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [studentModalOpen, setStudentModalOpen] = useState(false);
@@ -63,8 +65,9 @@ export default function TpoStudentsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Students</CardTitle>
-
-            {students && students?.length > 0 ? (<>
+            {loading ? (<div className="flex justify-center py-10">
+      <SparrowLoader text="Loading students..." />
+    </div>) : students && students?.length > 0 ? (<>
               <div className="flex items-center gap-4 pt-4">
                 <Select>
                   <SelectTrigger className="w-[180px]">
@@ -90,7 +93,14 @@ export default function TpoStudentsPage() {
                   </SelectContent>
                 </Select>
               </div>
-            </>) : (<><h1> No Data! Please add students </h1></>)}
+            </>) : (<><div className="py-10 w-full">
+      <EmptyState
+        className="w-full"
+        icon={Inbox}
+        title="No Students Yet"
+        description="There are currently no students added. Once students are added, they will appear here."
+      />
+    </div></>)}
           </CardHeader>
 
           <CardContent>
