@@ -159,13 +159,6 @@ const LoginPage = () => {
               <span className="text-white-600">Remember me</span>
             </label>
 
-            {/* <button
-              type="button"
-              onClick={() => navigate("/forgot-password")}
-              className="text-blue-500/50 hover:underline font-medium"
-            >
-              Forgot password?
-            </button> */}
 
              <p className="text-center text-sm mt-1">
 
