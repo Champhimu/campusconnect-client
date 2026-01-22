@@ -40,11 +40,27 @@ const menuItems = [
 export default function StudentSidebar() {
   const location = useLocation();
 
+  // user data (safe fallback)
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
   return (
     <Sidebar>
       {/* Header */}
       <SidebarHeader>
         <Logo />
+
+        {/* 🔹 USER INFO BLOCK (NEW – added, nothing removed) */}
+        <div className="mt-4 rounded-md bg-muted p-3">
+          <p className="text-sm font-medium">
+            {user.name || "Student Name"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {user.role || "STUDENT"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {user.instituteName || "Institute Name"}
+          </p>
+        </div>
       </SidebarHeader>
 
       {/* Main menu */}
@@ -55,14 +71,13 @@ export default function StudentSidebar() {
 
           return (
             <SidebarMenuItem key={item.href}>
-              <NavLink 
-              key={item.href}
-              to={item.href}
-              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm
-              ${active ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"}`}
+              <NavLink
+                to={item.href}
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm
+                ${active ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"}`}
               >
-                  <Icon />
-                  <span>{item.label}</span>
+                <Icon />
+                <span>{item.label}</span>
               </NavLink>
             </SidebarMenuItem>
           );
@@ -90,3 +105,4 @@ export default function StudentSidebar() {
     </Sidebar>
   );
 }
+

@@ -36,6 +36,17 @@ export function CompanySidebar() {
       {/* Header */}
       <SidebarHeader>
         <Logo />
+        <div className="mt-4 rounded-md bg-muted p-3">
+          <p className="text-sm font-medium">
+            {"Person Name"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {"HR"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {"Institute Name"}
+          </p>
+        </div>
       </SidebarHeader>
 
       {/* Main menu */}

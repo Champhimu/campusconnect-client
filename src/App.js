@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "r
 import { useEffect } from "react";
 /* Landing page */
 import LandingPage from "./pages/LandingPage";
+
 /* AUTH */
 import LoginPage from "./pages/auth/Login";
 import RequestAccessPage from "./pages/auth/RequestAccessForm";
@@ -14,16 +15,15 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import TPODashboard from "./pages/tpo/Dashboard";
 
 /* TPO */
-import TpoStudentsPage from "./pages/tpo/Students";
 import TpoLayout from "./layouts/TpoLayout";
+import TpoStudentsPage from "./pages/tpo/Students";
 import TpoCompaniesPage from "./pages/tpo/Companies";
 import TpoJobsPage from "./pages/tpo/Jobs";
 import TpoApplicationsPage from "./pages/tpo/Applications";
 import PlacementTrackerPage from "./pages/tpo/PlacementTracker";
 import TpoNotificationsPage from "./pages/tpo/Notifications";
-import ProtectedRoute from "./components/ProtectedRoute";
 
-/* Company layout + pages */
+/* Company */
 import CompanyLayout from "./pages/company/layout";
 import CompanyJobs from "./pages/company/Jobs";
 import CompanyProfile from "./pages/company/Profile";
@@ -33,7 +33,7 @@ import CompanyNotificationsPage from "./pages/company/notifications";
 
 // Layouts
 import StudentLayout from "./layouts/StudentLayout";
-import StudentProfilePage from "./pages/student/StudentProfilePage"; 
+import StudentProfilePage from "./pages/student/StudentProfilePage";
 import Jobs from "./pages/student/Jobs";
 import ApplicationStatusPage from "./pages/student/ApplicationStatus";
 import StudentCompaniesPage from "./pages/student/Companies";
@@ -45,7 +45,6 @@ import ResumeAndSkillsPage from "./pages/student/ResumeAndSkills";
 
 /* ADMIN */
 import AdminLayout from "./layouts/AdminLayout";
-// import AdminDashboard from "./pages/admin/Dashboard";
 import AdminUsers from "./pages/admin/users";
 import AdminCompaniesPage from "./pages/admin/companies";
 import CompanyConfigPage from "./pages/admin/CompanyConfig";
@@ -54,6 +53,7 @@ import AnnouncementsPage from "./pages/admin/Announcements";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentialsFromStorage } from "./redux/slices/authSlice";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -99,9 +99,7 @@ function App() {
         <Route path="/login" element={<LoginRedirect />} />
         <Route path="/request-trial" element={<RequestAccessPage />} />
 
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/requestTrial" element={<RequestAccessPage />} />
-
+          {/* COMPANY */}
         <Route path="/company"
           element={
             <ProtectedRoute allowedRoles={["COMPANY"]}>
@@ -117,43 +115,45 @@ function App() {
           <Route path="invites" element={<CollegeInvites />} />
           <Route path="notifications" element={<CompanyNotificationsPage />} />
         </Route>
+          
+          {/* TPO */}
+          <Route
+            path="/tpo"
+            element={
+              <ProtectedRoute allowedRoles={["TPO"]}>
+                <TpoLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<TPODashboard />} />
+            <Route path="students" element={<TpoStudentsPage />} />
+            <Route path="companies" element={<TpoCompaniesPage />} />
+            <Route path="jobs" element={<TpoJobsPage />} />
+            <Route path="applications" element={<TpoApplicationsPage />} />
+            <Route path="placement-tracker" element={<PlacementTrackerPage />} />
+            <Route path="notifications" element={<TpoNotificationsPage />} />
+          </Route>
 
-        <Route path="/tpo" 
-        element={
-          <ProtectedRoute allowedRoles={["TPO"]}>
-            <TpoLayout />
-          </ProtectedRoute>
-        }>
-          <Route index element={<TPODashboard />} />
-          <Route path="students" element={<TpoStudentsPage />} />
-          <Route path="companies" element={<TpoCompaniesPage />} />
-          <Route path="applications" element={<TpoApplicationsPage />} />
-          <Route path="placement-tracker" element={<PlacementTrackerPage />} />
-          <Route path="notifications" element={<TpoNotificationsPage />} />
-          <Route path="jobs" element={<TpoJobsPage />} />
-        </Route>
-
-
-        <Route path="/student"
-          element={
-            <ProtectedRoute allowedRoles={["STUDENT"]}>
-              <StudentLayout />
-            </ProtectedRoute>
-          }
-        >
-          {/* Student Dashboard */}
-          <Route index element={<StudentDashboard />} />
-          <Route path="profile" element={<StudentProfilePage />} />
-          <Route path="jobs" element={<Jobs />} />
-          <Route path="application-status" element={<ApplicationStatusPage />} />
-          <Route path="companies" element={<StudentCompaniesPage />} />
-          <Route path="notifications" element={<StudentNotificationsPage />} />
-          <Route path="placement-history" element={<PlacementHistoryPage />} />
-          <Route path="resume-score" element={<ResumeEnhancer />} />
-          <Route path="resume-score" element={<ResumeScore />} />
-          <Route path="resume" element={<ResumeAndSkillsPage />} />
-
-        </Route>
+          {/* STUDENT */}
+          <Route
+            path="/student"
+            element={
+              <ProtectedRoute allowedRoles={["STUDENT"]}>
+                <StudentLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<StudentDashboard />} />
+            <Route path="profile" element={<StudentProfilePage />} />
+            <Route path="jobs" element={<Jobs />} />
+            <Route path="application-status" element={<ApplicationStatusPage />} />
+            <Route path="companies" element={<StudentCompaniesPage />} />
+            <Route path="notifications" element={<StudentNotificationsPage />} />
+            <Route path="placement-history" element={<PlacementHistoryPage />} />
+            <Route path="resume-enhancer" element={<ResumeEnhancer />} />
+            <Route path="resume-score" element={<ResumeScore />} />
+            <Route path="resume" element={<ResumeAndSkillsPage />} />
+          </Route>
 
       {/* ADMIN ONLY */}
         <Route path="/admin" 
@@ -164,14 +164,14 @@ function App() {
           }>
            <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
-             <Route path="companies" element={<AdminCompaniesPage/>} />
-              <Route path="company-config" element={<CompanyConfigPage />} />
-              <Route path="reports" element={<ReportsPage />} />
-             <Route path="announcements" element={<AnnouncementsPage />} />
-         </Route>
+            <Route path="companies" element={<AdminCompaniesPage />} />
+            <Route path="company-config" element={<CompanyConfigPage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="announcements" element={<AnnouncementsPage />} />
+          </Route>
 
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
   );
 }
 
