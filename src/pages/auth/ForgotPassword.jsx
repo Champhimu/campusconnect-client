@@ -42,7 +42,7 @@ const ForgotPassword = () => {
         
         {/* Back Button */}
         <button
-          onClick={() => navigate("/#")}
+          onClick={() => navigate("/login")}
           className="flex items-center gap-2 text-sm text-blue-600 hover:underline mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
