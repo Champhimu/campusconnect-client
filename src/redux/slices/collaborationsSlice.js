@@ -71,7 +71,7 @@ export const fetchAvailableCompanies = createAsyncThunk(
   "collaborations/fetchAvailableCompanies",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get("/companies/available");
+      const res = await axiosInstance.get("/tpo/companies/available");
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

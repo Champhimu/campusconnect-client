@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // UI Components
 import { Button } from "../../components/ui/button";
@@ -13,10 +13,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Separator } from "../../components/ui/separator";
 import { Badge } from "../../components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
-
+import axiosInstance from "../../api/axiosInstance.js";
 import { AppHeader } from "../../components/app-header/AppHeader";
 
 import { companies, jobs } from "../../lib/data.js";
+// import { jobs } from "../../lib/data.js";
 import { PlaceHolderImages } from "../../lib/placeholder-images.js";
 
 import {
@@ -31,16 +32,28 @@ import {
   Upload
 } from "lucide-react";
 
-// Dummy placeholder images and data
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAvailableCompanies } from "../../redux/slices/collaborationsSlice";
 
 function TPOCompaniesPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [hiringRequests, setHiringRequests] = useState(initialHiringRequests);
-  const [approveModalOpen, setApproveModalOpen] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const dispatch = useDispatch();
+  
+    const { availableCompanies, loading, error } = useSelector(
+      (state) => state.collaborations
+    );
+    const {user} = useSelector((state) => state.auth);
+    
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [hiringRequests, setHiringRequests] = useState(initialHiringRequests);
+    const [approveModalOpen, setApproveModalOpen] = useState(false);
+    const [selectedRequest, setSelectedRequest] = useState(null);
 
-  const handleReject = (id) => {
+    useEffect(() => {
+      dispatch(fetchAvailableCompanies());
+      console.log("Fetched available companies for collaboration",availableCompanies, companies);
+    }, [dispatch]);
+
+    const handleReject = (id) => {
     setHiringRequests((prev) =>
       prev.map((req) => (req.id === id ? { ...req, status: "Rejected" } : req))
     );
@@ -125,7 +138,7 @@ function TPOCompaniesPage() {
                 </Button>
               </CardContent>
             </Card>
-            <InvitationPreviewDialog open={isModalOpen} onOpenChange={setIsModalOpen} />
+            <InvitationPreviewDialog open={isModalOpen} onOpenChange={setIsModalOpen} availableCompanies={availableCompanies} user={user} />
           </TabsContent>
 
           {/* Hiring Requests */}
@@ -180,23 +193,58 @@ function TPOCompaniesPage() {
 }
 
 // ------------------- Invitation Dialog -------------------
-function InvitationPreviewDialog({ open, onOpenChange }) {
+function InvitationPreviewDialog({ open, onOpenChange, availableCompanies, user }) {
+      const [selectedCompany, setSelectedCompany] = useState(null);
+      const [emailBody, setEmailBody] = useState("");
+
+      const [manualCompany, setManualCompany] = useState({
+  companyName: "",
+  contactPersonName: "",
+  contactEmail: "",
+});
+
   const defaultEmailSubject = "Campus Placement Collaboration Invite";
-  const defaultEmailBody = `Dear {{HR_NAME}},
+  useEffect(() => {
+  const body = `Dear ${selectedCompany?.contactPersonName || manualCompany?.contactPersonName ||"{{HR_NAME}}"},
 
-We would like to invite {{COMPANY_NAME}} to participate in our upcoming campus placement drive.
+We would like to invite ${selectedCompany?.companyName || manualCompany?.companyName || "{{COMPANY_NAME}}"} to participate in our upcoming campus placement drive.
 
-Our institution believes {{COMPANY_NAME}} would be a valuable opportunity for our students.
+Our institution believes ${selectedCompany?.companyName || manualCompany?.companyName || "{{COMPANY_NAME}}"} would be a valuable opportunity for our students.
 
 Please let us know your interest.
 
 Best regards,
 Training & Placement Office
-{{COLLEGE_NAME}}
-{{TPO_EMAIL}}`;
+${user?.organization.collegeName || "{{COLLEGE_NAME}}"}
+${user?.email || "{{TPO_EMAIL}}"}`
 
-  const handleSend = () => {
-    alert("Invitations Sent"); // Simple toast replacement
+console.log("Generated email body:", manualCompany);
+  setEmailBody(body);
+}, [selectedCompany, manualCompany]);
+
+
+  const handleSend = async() => {
+    if (!selectedCompany) {
+      alert("Please select a company first");
+      return;
+    }
+
+    try {
+      const payload = {
+        companyIds: [selectedCompany._id],
+        toEmail: selectedCompany.contactEmail,
+        subject: defaultEmailSubject,
+        message: emailBody,
+      };
+
+    await axiosInstance.post("/tpo/collaborations/send", payload);
+
+    alert("Invitation sent successfully");
+    
+    }catch (error) {
+      alert("Error sending invitation: " + error.message);
+      return;
+    }
     onOpenChange(false);
   };
 
@@ -221,15 +269,21 @@ Training & Placement Office
 
               {/* Individual */}
               <TabsContent value="individual" className="mt-4 space-y-4">
+                  {availableCompanies.length !== 0 && (
+                    <>
                 <div className="space-y-2">
                   <Label>Select a registered company</Label>
-                  <Select>
+                  <Select
+                   onValueChange={(value) => {
+                      const company = availableCompanies.find(c => c._id === value);
+                      setSelectedCompany(company);
+                    }}>
                     <SelectTrigger>
                       <SelectValue placeholder="Search and select a company..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {companies.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                      {availableCompanies.map((c) => (
+                        <SelectItem key={c._id} value={c._id}>{c.companyName}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -238,19 +292,39 @@ Training & Placement Office
                   <Separator />
                   <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-background px-2 text-xs text-muted-foreground">OR</span>
                 </div>
+                      </>  )}
                 <p className="text-sm font-medium">Manually enter company details</p>
                 <div className="space-y-4 rounded-md border p-4">
                   <div className="space-y-2">
                     <Label htmlFor="manual-company-name">Company Name</Label>
-                    <Input id="manual-company-name" placeholder="e.g. Acme Corp" />
+                    <Input
+  placeholder="e.g. Acme Corp"
+  value={manualCompany.companyName}
+  onChange={(e) =>
+    setManualCompany({ ...manualCompany, companyName: e.target.value })
+  }
+/>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="manual-hr-name">HR Name</Label>
-                    <Input id="manual-hr-name" placeholder="e.g. Alex Ray" />
+                    <Input
+  placeholder="e.g. Alex Ray"
+  value={manualCompany.contactPersonName}
+  onChange={(e) =>
+    setManualCompany({ ...manualCompany, contactPersonName: e.target.value })
+  }
+/>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="manual-hr-email">HR Email</Label>
-                    <Input id="manual-hr-email" type="email" placeholder="e.g. alex@acme.com" />
+                    <Input
+  type="email"
+  placeholder="e.g. alex@acme.com"
+  value={manualCompany.contactEmail}
+  onChange={(e) =>
+    setManualCompany({ ...manualCompany, contactEmail: e.target.value })
+  }
+/>
                   </div>
                 </div>
               </TabsContent>
@@ -313,7 +387,7 @@ Training & Placement Office
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email-body">Body</Label>
-                <Textarea id="email-body" defaultValue={defaultEmailBody} rows={12} />
+                <Textarea id="email-body" value={emailBody} onChange={(e) => setEmailBody(e.target.value)} rows={12} />
                 <p className="text-xs text-muted-foreground">
                   Placeholders like {'{{HR_NAME}}'} will be replaced for each recipient.
                 </p>

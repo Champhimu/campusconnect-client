@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 /* Landing page */
 import LandingPage from "./pages/LandingPage";
@@ -29,7 +29,7 @@ import CompanyJobs from "./pages/company/Jobs";
 import CompanyProfile from "./pages/company/Profile";
 import ApplicantsPage from "./pages/company/Applicants";
 import CollegeInvites from "./pages/company/CollegeInvites";
-
+import CompanyNotificationsPage from "./pages/company/notifications";
 
 // Layouts
 import StudentLayout from "./layouts/StudentLayout";
@@ -64,11 +64,18 @@ function App() {
 
   const LoginRedirect = () => {
   const { user, token } = useSelector((state) => state.auth);
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname;
 
   if (!token || !user) {
     return <LoginPage />;
   }
 
+  if (from) {
+    return <Navigate to={from} replace />;
+  }
+  
   switch (user.role) {
     case "STUDENT":
       return <Navigate to="/student" replace />;
@@ -109,6 +116,7 @@ function App() {
           <Route path="profile" element={<CompanyProfile />} />
           <Route path="applicants" element={<ApplicantsPage />} />
           <Route path="invites" element={<CollegeInvites />} />
+          <Route path="notifications" element={<CompanyNotificationsPage />} />
         </Route>
 
         <Route path="/tpo" 

@@ -27,23 +27,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchAvailableCompanies } from "../../redux/slices/collaborationsSlice";
 
 export default function TPOCollaborationPage() {
-  const dispatch = useDispatch();
-
-  const { companies, loading, error } = useSelector(
-    (state) => state.collaborations
-  );
-
-  useEffect(() => {
-    dispatch(fetchAvailableCompanies());
-    console.log("Fetched available companies for collaboration",companies);
-    alert("Fetched available companies for collaboration");
-  }, [dispatch]);
-
-
+  
   // REGISTERED COMPANIES TAB STATE
   const [availableCompanies, setAvailableCompanies] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);

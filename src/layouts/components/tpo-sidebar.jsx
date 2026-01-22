@@ -47,11 +47,11 @@ export function TpoSidebar() {
         {/* Main menu */}
         <SidebarMenu className="flex-1">
           {menuItems.map((item) => {
-            const active = location.pathname === item.href;
+            const active = location.pathname === item.to;
             const Icon = item.icon;
   
             return (
-              <SidebarMenuItem key={item.href}>
+              <SidebarMenuItem key={item.to}>
                 <NavLink 
                 key={item.to}
                 to={item.to}
