@@ -11,9 +11,12 @@ import {
 } from "../ui/dropdown-menu"
 import { SidebarTrigger } from "../ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/slices/authSlice"
+import { useNavigate } from "react-router-dom";
 
 export function AppHeader({ title, description, children }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMounted, setIsMounted] = useState(false)
 
@@ -21,11 +24,11 @@ export function AppHeader({ title, description, children }) {
     setIsMounted(true)
   }, [])
 
-  function logout(){
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/", { replace: true });
-  }
+  const handleLogout = () => {
+    dispatch(logout());         // redux state cleared
+    navigate("/login", { replace: true });  // redirect
+  };
+
   return (
     <header className="sticky top-0 z-10 flex h-auto min-h-16 flex-col items-start gap-4 border-b bg-background px-4 py-4 sm:flex-row sm:items-center sm:px-6">
       <div className="flex items-center gap-2">
@@ -71,7 +74,7 @@ export function AppHeader({ title, description, children }) {
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => logout()}>
+                onClick={() => handleLogout()}>
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
