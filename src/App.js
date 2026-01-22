@@ -75,7 +75,7 @@ function App() {
   if (from) {
     return <Navigate to={from} replace />;
   }
-  
+
   switch (user.role) {
     case "STUDENT":
       return <Navigate to="/student" replace />;
@@ -94,7 +94,6 @@ function App() {
   return (
     <Router>
       <Routes>
-
         <Route path="/" element={<LandingPage />} />
         {/* AUTH */}
         <Route path="/login" element={<LoginRedirect />} />
