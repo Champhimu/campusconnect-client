@@ -37,11 +37,25 @@ export function TpoSidebar() {
     { to: "/tpo/notifications", icon: Bell, label: "Notifications" },
   ];
   
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+
     return (
       <Sidebar>
         {/* Header */}
         <SidebarHeader>
           <Logo />
+
+         <div className="mt-4 rounded-md bg-muted p-3">
+  <p className="text-sm font-medium">
+    {user.name || "TPO Name"}
+  </p>
+  <p className="text-xs text-muted-foreground">
+    {user.role || "TPO"}
+  </p>
+  <p className="text-xs text-muted-foreground">
+    {user.instituteName || "Institute Name"}
+  </p>
+</div>
         </SidebarHeader>
   
         {/* Main menu */}
