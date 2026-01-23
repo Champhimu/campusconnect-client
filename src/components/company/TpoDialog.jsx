@@ -10,6 +10,8 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Loader2 } from "lucide-react";
 import { useToast } from "../../hooks/use-toast";
 import { Label } from "../ui/label";
+import { createTPO } from "../../redux/slices/admin/userMgmtSlice";
+import { useDispatch } from "react-redux";
 
 const tpoSchema = z.object({
   name: z.string().min(1, "TPO name is required."),
@@ -28,7 +30,8 @@ export function TpoDialog({ open, onOpenChange, mode, tpo, onSuccess }) {
   const formId = useId();
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
-
+  const dispatch = useDispatch();
+  
   const form = useForm({
     resolver: zodResolver(tpoSchema),
     defaultValues: {
@@ -46,13 +49,16 @@ export function TpoDialog({ open, onOpenChange, mode, tpo, onSuccess }) {
     });
   }, [tpo, form]);
 
-  const onSubmit = (data) => {
-    startTransition(() => {
-      setTimeout(() => {
-        toast({ title: "Success", description: `TPO ${data.name} saved!` });
-        onSuccess();
-      }, 1000);
-    });
+  const onSubmit = async(data) => {
+    const result = await dispatch(createTPO(data)).unwrap();
+    alert("TPO Added");
+    onSuccess()
+    // startTransition(() => {
+    //   setTimeout(() => {
+    //     toast({ title: "Success", description: `TPO ${data.name} saved!` });
+    //     onSuccess();
+    //   }, 1000);
+    // });
   };
 
   return (

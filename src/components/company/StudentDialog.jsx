@@ -68,45 +68,50 @@ export function StudentDialog({ open, onOpenChange, mode, student, onSuccess }) 
   }, [student, form]);
 
   const onSubmit = (data) => {
-    console.log("Form Data:", student.userId);
+    console.log("Form Data:", data);
     const payload = {
-    name: data.name,
-    registrationNumber: data.regNo,
-    email: data.email,
-    branch: data.branch,
-    academicYear: data.batch,
-    isActive: data.status === "active",
-  };
+      name: data.name,
+      registrationNumber: data.regNo,
+      email: data.email,
+      branch: data.branch,
+      academicYear: data.batch,
+      isActive: data.status === "active",
+    };
 
-  startTransition(() => {
-    if (mode === "add") {
-      dispatch(createStudent(payload))
-        .unwrap()
-        .then(() => {
-          toast({ title: "Success", description: "Student created successfully" });
-          onSuccess();
-        })
-        .catch((err) => {
-          toast({ variant: "destructive", title: "Error", description: err });
-        });
-    }
+    startTransition(() => {
+      if (mode === "add") {
+        dispatch(createStudent(payload))
+          .unwrap()
+          .then(() => {
+            toast({ title: "Success", description: "Student created successfully" });
+            alert("Data submitted");
+            onSuccess();
+          })
+          .catch((err) => {
+            toast({ variant: "destructive", title: "Error", description: err });
+            alert(err);
+          });
+      }
 
-    if (mode === "edit" && student) {
-      dispatch(
-        updateStudent({
-          id: student.userId._id,
-          data: payload,
-        })
-      )
-      .unwrap()
-        .then(() => {
-          toast({ title: "Success", description: "Student updated successfully" });
-          onSuccess();
-        })
-        .catch((err) => {
-          toast({ variant: "destructive", title: "Error", description: err });
-        });
-    }
+      if (mode === "edit" && student) {
+        console.log("Edit", student,payload);
+        dispatch(
+          updateStudent({
+            id: student.userId._id,
+            data: payload,
+          })
+        )
+          .unwrap()
+          .then(() => {
+            alert("Student Data Updated Successfull");
+            // toast({ title: "Success", description: "Student updated successfully" });
+            onSuccess();
+          })
+          .catch((err) => {
+            toast({ variant: "destructive", title: "Error", description: err });
+            alert(err);
+          });
+      }
     });
     // startTransition(() => {
     //   setTimeout(() => {
@@ -130,7 +135,7 @@ export function StudentDialog({ open, onOpenChange, mode, student, onSuccess }) 
               <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
                   <FormLabel required>Student Name</FormLabel>
-                  <FormControl><Input {...field} readOnly={isViewMode || mode === 'edit'} placeholder="e.g., Alex Ray" /></FormControl>
+                  <FormControl><Input {...field} readOnly={isViewMode} placeholder="e.g., Alex Ray" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -146,7 +151,7 @@ export function StudentDialog({ open, onOpenChange, mode, student, onSuccess }) 
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem>
                   <FormLabel required>Email</FormLabel>
-                  <FormControl><Input {...field} type="email" readOnly={isViewMode} placeholder="e.g., alex@example.com" /></FormControl>
+                  <FormControl><Input {...field} type="email" readOnly={isViewMode || mode === 'edit'} placeholder="e.g., alex@example.com" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />

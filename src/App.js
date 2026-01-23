@@ -63,32 +63,32 @@ function App() {
   }, [dispatch]);
 
   const LoginRedirect = () => {
-  const { user, token } = useSelector((state) => state.auth);
-  const location = useLocation();
+    const { user, token } = useSelector((state) => state.auth);
+    const location = useLocation();
+    const from = location.state?.from?.pathname;
+    console.log(user, token, from);
 
-  const from = location.state?.from?.pathname;
-
-  if (!token || !user) {
-    return <LoginPage />;
-  }
-
-  if (from) {
-    return <Navigate to={from} replace />;
-  }
-
-  switch (user.role) {
-    case "STUDENT":
-      return <Navigate to="/student" replace />;
-    case "COMPANY":
-      return <Navigate to="/company" replace />;
-    case "CADMIN":
-      return <Navigate to="/admin" replace />;
-    case "TPO":
-      return <Navigate to="/tpo" replace />;
-    default:
+    if (!token || !user) {
       return <LoginPage />;
-  }
-};
+    }
+
+    if (from) {
+      return <Navigate to={from} replace />;
+    }
+
+    switch (user.role) {
+      case "STUDENT":
+        return <Navigate to="/student" replace />;
+      case "COMPANY":
+        return <Navigate to="/company" replace />;
+      case "CADMIN":
+        return <Navigate to="/admin" replace />;
+      case "TPO":
+        return <Navigate to="/tpo" replace />;
+      default:
+        return <LoginPage />;
+    }
+  };
 
 
   return (
@@ -99,7 +99,7 @@ function App() {
         <Route path="/login" element={<LoginRedirect />} />
         <Route path="/request-trial" element={<RequestAccessPage />} />
 
-          {/* COMPANY */}
+        {/* COMPANY */}
         <Route path="/company"
           element={
             <ProtectedRoute allowedRoles={["COMPANY"]}>
@@ -115,63 +115,63 @@ function App() {
           <Route path="invites" element={<CollegeInvites />} />
           <Route path="notifications" element={<CompanyNotificationsPage />} />
         </Route>
-          
-          {/* TPO */}
-          <Route
-            path="/tpo"
-            element={
-              <ProtectedRoute allowedRoles={["TPO"]}>
-                <TpoLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<TPODashboard />} />
-            <Route path="students" element={<TpoStudentsPage />} />
-            <Route path="companies" element={<TpoCompaniesPage />} />
-            <Route path="jobs" element={<TpoJobsPage />} />
-            <Route path="applications" element={<TpoApplicationsPage />} />
-            <Route path="placement-tracker" element={<PlacementTrackerPage />} />
-            <Route path="notifications" element={<TpoNotificationsPage />} />
-          </Route>
 
-          {/* STUDENT */}
-          <Route
-            path="/student"
-            element={
-              <ProtectedRoute allowedRoles={["STUDENT"]}>
-                <StudentLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<StudentDashboard />} />
-            <Route path="profile" element={<StudentProfilePage />} />
-            <Route path="jobs" element={<Jobs />} />
-            <Route path="application-status" element={<ApplicationStatusPage />} />
-            <Route path="companies" element={<StudentCompaniesPage />} />
-            <Route path="notifications" element={<StudentNotificationsPage />} />
-            <Route path="placement-history" element={<PlacementHistoryPage />} />
-            <Route path="resume-enhancer" element={<ResumeEnhancer />} />
-            <Route path="resume-score" element={<ResumeScore />} />
-            <Route path="resume" element={<ResumeAndSkillsPage />} />
-          </Route>
+        {/* TPO */}
+        <Route
+          path="/tpo"
+          element={
+            <ProtectedRoute allowedRoles={["TPO"]}>
+              <TpoLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<TPODashboard />} />
+          <Route path="students" element={<TpoStudentsPage />} />
+          <Route path="companies" element={<TpoCompaniesPage />} />
+          <Route path="jobs" element={<TpoJobsPage />} />
+          <Route path="applications" element={<TpoApplicationsPage />} />
+          <Route path="placement-tracker" element={<PlacementTrackerPage />} />
+          <Route path="notifications" element={<TpoNotificationsPage />} />
+        </Route>
 
-      {/* ADMIN ONLY */}
-        <Route path="/admin" 
-        element={
+        {/* STUDENT */}
+        <Route
+          path="/student"
+          element={
+            <ProtectedRoute allowedRoles={["STUDENT"]}>
+              <StudentLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<StudentDashboard />} />
+          <Route path="profile" element={<StudentProfilePage />} />
+          <Route path="jobs" element={<Jobs />} />
+          <Route path="application-status" element={<ApplicationStatusPage />} />
+          <Route path="companies" element={<StudentCompaniesPage />} />
+          <Route path="notifications" element={<StudentNotificationsPage />} />
+          <Route path="placement-history" element={<PlacementHistoryPage />} />
+          <Route path="resume-enhancer" element={<ResumeEnhancer />} />
+          <Route path="resume-score" element={<ResumeScore />} />
+          <Route path="resume" element={<ResumeAndSkillsPage />} />
+        </Route>
+
+        {/* ADMIN ONLY */}
+        <Route path="/admin"
+          element={
             <ProtectedRoute allowedRoles={["CADMIN"]}>
               <AdminLayout />
             </ProtectedRoute>
           }>
-           <Route index element={<AdminDashboard />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="companies" element={<AdminCompaniesPage />} />
-            <Route path="company-config" element={<CompanyConfigPage />} />
-            <Route path="reports" element={<ReportsPage />} />
-            <Route path="announcements" element={<AnnouncementsPage />} />
-          </Route>
+          <Route index element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="companies" element={<AdminCompaniesPage />} />
+          <Route path="company-config" element={<CompanyConfigPage />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="announcements" element={<AnnouncementsPage />} />
+        </Route>
 
-        </Routes>
-      </Router>
+      </Routes>
+    </Router>
   );
 }
 

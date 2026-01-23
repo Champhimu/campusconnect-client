@@ -54,19 +54,19 @@ export default function TpoStudentsPage() {
   }, [dispatch]);
 
   const handleViewProfile = (student) => {
-        setSelectedStudent(student);
-        setViewProfileModalOpen(true);
-    };
+    setSelectedStudent(student);
+    setViewProfileModalOpen(true);
+  };
 
-    const handleViewResume = (student) => {
-        setSelectedStudent(student);
-        setViewResumeModalOpen(true);
-    };
+  const handleViewResume = (student) => {
+    setSelectedStudent(student);
+    setViewResumeModalOpen(true);
+  };
 
-    const handleProvideFeedback = (student) => {
-        setSelectedStudent(student);
-        setFeedbackModalOpen(true);
-    };
+  const handleProvideFeedback = (student) => {
+    setSelectedStudent(student);
+    setFeedbackModalOpen(true);
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -79,90 +79,90 @@ export default function TpoStudentsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Students</CardTitle>
-              <div className="flex items-center gap-4 pt-4">
-                <Select>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by Department" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {branches.map((branch) => (
-                      <SelectItem key={branch.value} value={branch.value}> {branch.label} </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            <div className="flex items-center gap-4 pt-4">
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by Department" />
+                </SelectTrigger>
+                <SelectContent>
+                  {branches.map((branch) => (
+                    <SelectItem key={branch.value} value={branch.value}> {branch.label} </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-                <Select>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Filter by Year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2026">2026</SelectItem>
-                    <SelectItem value="2025">2025</SelectItem>
-                    <SelectItem value="2024">2024</SelectItem>
-                    <SelectItem value="2023">2023</SelectItem>
-                    <SelectItem value="2022">2022</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="2026">2026</SelectItem>
+                  <SelectItem value="2025">2025</SelectItem>
+                  <SelectItem value="2024">2024</SelectItem>
+                  <SelectItem value="2023">2023</SelectItem>
+                  <SelectItem value="2022">2022</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
 
           {loading && (
-            <div className="flex justify-center py-10">
+            <div className="flex items-center justify-center h-full w-full">
               <SparrowLoader text="Loading students..." />
             </div>
           )}
           <CardContent>
             {!loading && students && students.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Reg. No</TableHead>
-                  <TableHead>Branch</TableHead>
-                  <TableHead>Batch</TableHead>
-                  <TableHead>Placement</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {students.map((student) => (
-                  <TableRow key={student.registrationNumber}>
-                    <TableCell>{student?.userId.name}</TableCell>
-                    <TableCell>{student.registrationNumber}</TableCell>
-                    <TableCell>{student.branch}</TableCell>
-                    <TableCell>{student.academicYear}</TableCell>
-                    <TableCell>
-                      <Badge variant={student.placementStatus === "PLACED" ? "default" : "secondary"}>
-                        {student.placementStatus}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={student?.userId.isActive ? "default" : "destructive"}>
-                        {student?.userId.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onSelect={() => handleViewProfile(student)}>View Profile</DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => handleViewResume(student)}>View Resume</DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => handleProvideFeedback(student)}>Provide Feedback</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Reg. No</TableHead>
+                    <TableHead>Branch</TableHead>
+                    <TableHead>Batch</TableHead>
+                    <TableHead>Placement</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table> ) : (
+                </TableHeader>
+
+                <TableBody>
+                  {students.map((student) => (
+                    <TableRow key={student.registrationNumber}>
+                      <TableCell>{student?.userId.name}</TableCell>
+                      <TableCell>{student.registrationNumber}</TableCell>
+                      <TableCell>{student.branch}</TableCell>
+                      <TableCell>{student.academicYear}</TableCell>
+                      <TableCell>
+                        <Badge variant={student.placementStatus === "PLACED" ? "default" : "secondary"}>
+                          {student.placementStatus}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={student?.userId.isActive ? "default" : "destructive"}>
+                          {student?.userId.isActive ? "Active" : "Inactive"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onSelect={() => handleViewProfile(student)}>View Profile</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => handleViewResume(student)}>View Resume</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => handleProvideFeedback(student)}>Provide Feedback</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>) : (
               <EmptyState
                 icon={Users}
                 title="No Students Found"
@@ -196,78 +196,78 @@ export default function TpoStudentsPage() {
 
 
 function ViewProfileDialog({ open, onOpenChange, student }) {
-    if (!student) return null;
+  if (!student) return null;
 
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-2xl">
-                <DialogHeader>
-                    <DialogTitle className="font-headline">Student Profile</DialogTitle>
-                    <DialogDescription>Read-only view of student details.</DialogDescription>
-                </DialogHeader>
-                <div className="max-h-[60vh] overflow-y-auto p-6 space-y-6 thin-scrollbar">
-                    <section>
-                        <h3 className="font-semibold border-b pb-2 mb-4">Personal Information</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Full Name</Label>
-                                <Input value={student.userId.name} readOnly />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Email</Label>
-                                <Input value={student.userId.email} readOnly />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Registration Number</Label>
-                                <Input value={student.registrationNumber} readOnly />
-                            </div>
-                        </div>
-                    </section>
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="font-headline">Student Profile</DialogTitle>
+          <DialogDescription>Read-only view of student details.</DialogDescription>
+        </DialogHeader>
+        <div className="max-h-[60vh] overflow-y-auto p-6 space-y-6 thin-scrollbar">
+          <section>
+            <h3 className="font-semibold border-b pb-2 mb-4">Personal Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Full Name</Label>
+                <Input value={student.userId.name} readOnly />
+              </div>
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input value={student.userId.email} readOnly />
+              </div>
+              <div className="space-y-2">
+                <Label>Registration Number</Label>
+                <Input value={student.registrationNumber} readOnly />
+              </div>
+            </div>
+          </section>
 
-                    <section>
-                        <h3 className="font-semibold border-b pb-2 my-4">Academic Information</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Department / Branch</Label>
-                                <Input value={student.branch} readOnly />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Batch / Graduation Year</Label>
-                                <Input value={student.academicYear} readOnly />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>CGPA</Label>
-                                <Input value={student.cgpa.toString()} readOnly />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Backlogs</Label>
-                                <Input value={student.backlogs.toString()} readOnly />
-                            </div>
-                        </div>
-                    </section>
+          <section>
+            <h3 className="font-semibold border-b pb-2 my-4">Academic Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Department / Branch</Label>
+                <Input value={student.branch} readOnly />
+              </div>
+              <div className="space-y-2">
+                <Label>Batch / Graduation Year</Label>
+                <Input value={student.academicYear} readOnly />
+              </div>
+              <div className="space-y-2">
+                <Label>CGPA</Label>
+                <Input value={student.cgpa.toString()} readOnly />
+              </div>
+              <div className="space-y-2">
+                <Label>Backlogs</Label>
+                <Input value={student.backlogs.toString()} readOnly />
+              </div>
+            </div>
+          </section>
 
-                    <section>
-                        <h3 className="font-semibold border-b pb-2 my-4">Placement Status</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Status</Label>
-                                <Input value={student.placementStatus} readOnly />
-                            </div>
-                            {student.status === "Placed" && (
-                                <div className="space-y-2">
-                                    <Label>Placed Company</Label>
-                                    <Input value={student.company} readOnly />
-                                </div>
-                            )}
-                        </div>
-                    </section>
+          <section>
+            <h3 className="font-semibold border-b pb-2 my-4">Placement Status</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Input value={student.placementStatus} readOnly />
+              </div>
+              {student.status === "Placed" && (
+                <div className="space-y-2">
+                  <Label>Placed Company</Label>
+                  <Input value={student.company} readOnly />
                 </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
+              )}
+            </div>
+          </section>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
 }
 
 function ViewResumeDialog({ open, onOpenChange, student }) {

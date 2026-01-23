@@ -3,11 +3,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-// import { useToast } from "../../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { FileText, FileUp, X, Download, Loader2 } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { bulkCreateTPOs, bulkUploadStudents } from "../../redux/slices/admin/userMgmtSlice";
-import * as XLSX from "xlsx"; // npm install xlsx
+import { useDispatch, useSelector } from "react-redux";
+import { bulkCreateTPOs, bulkUploadStudents, fetchStudents } from "../../redux/slices/admin/userMgmtSlice";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 export function BulkUploadDialog({ open, onOpenChange, userType }) {
   const title = `Bulk ${userType} Upload`;
@@ -15,14 +16,15 @@ export function BulkUploadDialog({ open, onOpenChange, userType }) {
 
   const expectedColumns =
     userType === "Student"
-      ? ['RegNo', 'Name', 'Email', 'Department', 'Batch', 'CGPA', 'Backlogs']
-      : ['Name', 'Email', 'Department'];
+      ? "RegNo, Name, Email, Department, Batch, CGPA, Backlogs"
+      : "Name, Email, Department";
 
   const [file, setFile] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [isPending, startTransition] = useTransition();
-//   const { toast } = useToast();
+  const { toast } = useToast();
   const dispatch = useDispatch();
+  const { bulkLoading, bulkResult, bulkError } = useSelector((state) => state.admin);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0];
@@ -38,55 +40,44 @@ export function BulkUploadDialog({ open, onOpenChange, userType }) {
     }
   };
 
+  const handleDownloadTemplate = () => {
+      // Create a new workbook
+      const wb = XLSX.utils.book_new();
+      const wsData = [expectedColumns.split(",").map(h => h.trim())]; // add headers row
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(wb, ws, "Template");
+  
+      // Convert to blob and download
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([wbout], { type: "application/octet-stream" });
+      saveAs(blob, `sample-${userType.toLowerCase()}-template.xlsx`);
+    };
+
     const handleUpload = async () => {
     setErrorMsg("");
     if (!file) {
-    //   toast({ variant: "destructive", title: "No File Selected", description: "Please select a file to upload." });
+      toast({ variant: "destructive", title: "No File Selected", description: "Please select a file to upload." });
+      alert("Select a file to upload")
       return;
     }
+    const formData = new FormData();
+    formData.append("file", file);
 
     startTransition(async () => {
       try {
-        // Read file using XLSX
-        const data = await file.arrayBuffer();
-        const workbook = XLSX.read(data);
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" }); // defval="" ensures empty cells are captured
-        // Validate columns
-        const fileColumns = Object.keys(rows[0] || {});
-        console.log("Parsed rows:", rows, fileColumns);
-        console.log("Missing columns:", expectedColumns.filter(col => !fileColumns.includes(col)));
-        const missingCols = expectedColumns.filter(col => !fileColumns.includes(col));
-        if (missingCols.length) {
-        //   toast({
-        //     variant: "destructive",
-        //     title: "Missing Columns",
-        //     description: `Required columns missing: ${missingCols.join(", ")}`
-        //   });
-          return;
-        }
-
-        // Validate at least 1 row
-        if (rows.length === 0) {
-        //   toast({ variant: "destructive", title: "No Data", description: "File must have at least one row of data." });
-          return;
-        }
-
-        // Prepare FormData
-        const formData = new FormData();
-        formData.append("file", file);
 
         // Dispatch appropriate Redux action
         let response;
         if (userType === "Student") response = await dispatch(bulkUploadStudents(formData)).unwrap();
         else if (userType === "TPO") response = await dispatch(bulkCreateTPOs(formData)).unwrap();
         // else if (userType === "Academic") response = await dispatch(bulkUploadAcademic(formData)).unwrap();
-
+        dispatch(fetchStudents);
         // toast({ title: "Upload Successful", description: `Processed ${rows.length} row(s)` });
-        onOpenChange(false);
+        alert("success");
         setFile(null);
       } catch (err) {
+        alert(err);
+        setFile(null);
         // toast({ variant: "destructive", title: "Upload Failed", description: err?.message || "Something went wrong" });
       }
     });
@@ -131,18 +122,25 @@ export function BulkUploadDialog({ open, onOpenChange, userType }) {
             </Label>
           )}
             {errorMsg && <p className="text-red-600 font-medium">{errorMsg}</p>}
-          <Button variant="outline" className="w-full flex items-center justify-center gap-2" asChild>
-            <a
-              href={`/sample-${userType.toLowerCase()}-template.xlsx`}
-              download
-              className="w-full flex items-center justify-center gap-2"
-            >
+          <Button onClick={handleDownloadTemplate} variant="outline" className="w-full flex items-center justify-center gap-2">
               <Download className="mr-2 h-4 w-4" />
               Download Sample Template
-            </a>
           </Button>
 
-          <p className="text-sm text-muted-foreground">Expected columns: {expectedColumns?.join(", ")}</p>
+          <p className="text-sm text-muted-foreground">Expected columns: {expectedColumns}</p>
+
+          {bulkResult && bulkResult.data && bulkResult.data.length > 0 && (
+        <div className="mt-4 p-2 border rounded bg-red-50">
+          <p className="font-medium text-red-600">{bulkResult.message}</p>
+          <ul className="list-disc ml-5 text-sm text-red-700">
+            {bulkResult.data.map((row, idx) => (
+              <li key={idx}>
+                {row.email}: {row.reason}: {row.status}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
         </div>
 
         <DialogFooter>

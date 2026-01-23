@@ -184,7 +184,7 @@ const LoginPage = () => {
            {/* Sign up link */}
           <p className="text-center text-sm mt-6">
             Don’t have an account?{' '}
-            <Button variant="link" onClick={() => navigate('/requestTrial')}
+            <Button variant="link" onClick={() => navigate('/request-trial')}
                className="no-underline hover:no-underline p-0 h-auto">
               Request here
             </Button>
