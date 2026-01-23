@@ -15,7 +15,7 @@ const publicEndpoints = [
 // Create axios instance with default headers
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
-  timeout: 10000,
+  timeout: 900000,
 });
 
 // Add JWT token to all requests except public endpoints

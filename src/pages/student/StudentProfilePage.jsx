@@ -4,88 +4,94 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
-import axiosInstance from "../../api/axiosInstance";
+import { getStudentProfile } from "../../services/resumeService";
+import { SparrowLoader } from "../../components/sparrow-loader";
 
 const StudentProfilePage = () => {
     const [student, setStudent] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Get userId from localStorage
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const userId = storedUser?.id;
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await getStudentProfile(); // call your API
+                if (response?.success) {
+                    const profile = response.data;
+                    setStudent(profile);
+                    setLoading(false);
+                } else {
+                    console.warn("Profile fetch failed:", response?.message);
+                }
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            }
+        };
+        fetchProfile();
+    }, []);
 
-      useEffect(() => {
-          if (!userId) return;
-    const fetchStudentProfile = async () => {
-      try {
-        const res = await axiosInstance.get(`/admin/studentProfile/${userId}`);
-            console.log("Fetching profile for userId:", res);
-        setStudent(res.data.data);
-      } catch (error) {
-        console.error("Error fetching student profile", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStudentProfile();
-  }, [userId]);
+    // if (loading) {
+    //     return <div className="p-8">Loading...</div>;
+    // }
 
-  if (loading) {
-    return <div className="p-8">Loading...</div>;
-  }
-
-  if (!student) {
-    return <div className="p-8">Student profile not found</div>;
-  }
+    // if (!student) {
+    //     return <div className="p-8">Student profile not found</div>;
+    // }
 
     return (
         <div className="flex min-h-screen w-full flex-col">
             <AppHeader title="My Profile" />
-            <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-                <Card>
-                    <CardHeader>
-                        <div className="flex items-center gap-4">
-                            <Avatar className="h-20 w-20">
-                                <AvatarImage src="" />
-                                <AvatarFallback>{student?.userId.name?.charAt(0).toUpperCase() || "S"}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <CardTitle className="font-headline text-2xl">{student.userId.name}</CardTitle>
-                                <CardDescription>Student ID: {student.registrationNumber}</CardDescription>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-8">
-                        <section>
-                            <h3 className="font-headline text-xl mb-4">Personal Details</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Name</Label>
-                                    <Input id="name" defaultValue={student.userId.name} readOnly />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" defaultValue={student.userId.email} readOnly />
+
+            {loading ? (
+                <div className="flex items-center justify-center h-full w-full">
+                    <SparrowLoader text="Loading students..." />
+                </div>
+            ) :
+                <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center gap-4">
+                                <Avatar className="h-20 w-20">
+                                    <AvatarImage src="" />
+                                    <AvatarFallback>{student?.user.name?.charAt(0).toUpperCase() || "S"}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <CardTitle className="font-headline text-2xl">{student.user.name}</CardTitle>
+                                    <CardDescription>Student ID: {student?.studentProfile?.registrationNumber}</CardDescription>
                                 </div>
                             </div>
-                        </section>
-                        <section>
-                            <h3 className="font-headline text-xl mb-4">Academic Details</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label>CGPA</Label>
-                                    <Input defaultValue={student.cgpa} readOnly />
-                                    <p className="text-xs text-muted-foreground">Academic details are read-only.</p>
+                        </CardHeader>
+                        <CardContent className="space-y-8">
+                            <section>
+                                <h3 className="font-headline text-xl mb-4">Personal Details</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="name">Name</Label>
+                                        <Input id="name" defaultValue={student?.user?.name} readOnly />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email">Email</Label>
+                                        <Input id="email" type="email" defaultValue={student?.user?.email} readOnly />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Backlogs</Label>
-                                    <Input defaultValue={student.backlogs} readOnly />
+                            </section>
+                            <section>
+                                <h3 className="font-headline text-xl mb-4">Academic Details</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <Label>CGPA</Label>
+                                        <Input defaultValue={student?.studentProfile?.cgpa} readOnly />
+                                        <p className="text-xs text-muted-foreground">Academic details are read-only.</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Backlogs</Label>
+                                        <Input defaultValue={student?.studentProfile?.backlogs} readOnly />
+                                    </div>
                                 </div>
-                            </div>
-                        </section>
-                    </CardContent>
-                </Card>
-            </main>
+                            </section>
+                        </CardContent>
+                    </Card>
+                </main>
+            }
         </div>
     );
 };
