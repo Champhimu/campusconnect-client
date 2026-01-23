@@ -109,7 +109,8 @@ export const toggleStudentStatus = createAsyncThunk(
     async (userId, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.patch(`/admin/toggle/${userId}`, {});
-            return { userId, isActive: response.data.message.includes('activated') };
+            console.log("RESPONSE", response.data.message.toLowerCase(), response.data.message.toLowerCase().includes('activated'))
+            return { userId, isActive: !response.data.message.toLowerCase().includes('deactivated') };
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to toggle student status');
         }
@@ -123,7 +124,7 @@ export const toggleTPOStatus = createAsyncThunk(
         try {
             const response = await axiosInstance.patch(`/admin/toggle/tpo/${userId}`, {});
             console.log("toggleTPOStatus response:", response.data.message.includes('activated'));
-            return { userId, isActive: response.data.message.includes('activated') };
+            return { userId, isActive: response.data.message.toLowerCase().includes('deactivated') };
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to toggle TPO status');
         }
@@ -295,14 +296,15 @@ const adminSlice = createSlice({
             .addCase(updateStudent.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = 'Student updated successfully';
-                const index = state.students.findIndex(s => s.userId._id === action.payload.data.userId._id);
+                const { id, data } = action.meta.arg; // This contains what you sent in dispatch
+                const index = state.students.findIndex(s => s.userId._id === id);
                 if (index !== -1) {
                     state.students[index] = {
                         ...state.students[index],
-                        ...action.payload.data,
+                        ...data, // merge the updated fields
                         userId: {
                             ...state.students[index].userId,
-                            ...action.payload.data.userId
+                            ...data.userId // if userId fields were updated
                         }
                     };
                 }
@@ -351,6 +353,7 @@ const adminSlice = createSlice({
             .addCase(toggleStudentStatus.fulfilled, (state, action) => {
                 state.loading = false;
                 // state.success = 'Student status updated';
+                console.log('TOGGLE PAYLOAD:', action.payload);
                 state.students = state.students.map(student =>
                     student.userId._id === action.payload.userId
                         ? {

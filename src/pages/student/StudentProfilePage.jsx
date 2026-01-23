@@ -29,14 +29,6 @@ const StudentProfilePage = () => {
         fetchProfile();
     }, []);
 
-    // if (loading) {
-    //     return <div className="p-8">Loading...</div>;
-    // }
-
-    // if (!student) {
-    //     return <div className="p-8">Student profile not found</div>;
-    // }
-
     return (
         <div className="flex min-h-screen w-full flex-col">
             <AppHeader title="My Profile" />
