@@ -24,6 +24,7 @@ import {
   LifeBuoy,
   Settings,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 /* Sidebar menu items */
 const menuItems = [
@@ -39,6 +40,8 @@ const menuItems = [
 
 export default function StudentSidebar() {
   const location = useLocation();
+  const auth = useSelector((state) => state.auth);
+  const { user } = auth;
 
   return (
     <Sidebar>
@@ -55,14 +58,13 @@ export default function StudentSidebar() {
 
           return (
             <SidebarMenuItem key={item.href}>
-              <NavLink 
-              key={item.href}
-              to={item.href}
-              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm
-              ${active ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"}`}
+              <NavLink
+                to={item.href}
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm
+                ${active ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"}`}
               >
-                  <Icon />
-                  <span>{item.label}</span>
+                <Icon />
+                <span>{item.label}</span>
               </NavLink>
             </SidebarMenuItem>
           );
@@ -71,22 +73,29 @@ export default function StudentSidebar() {
 
       {/* Footer */}
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Help">
-              <LifeBuoy />
-              <span>Help</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+      <div className="mt-4 flex items-center gap-3 rounded-lg bg-muted p-3 shadow-sm">
+          {/* Optional Avatar */}
+          <div className="flex-shrink-0">
+            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-muted-foreground font-bold">
+              {user.name ? user.name[0] : "STUDENT"}
+            </div>
+          </div>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Settings">
-              <Settings />
-              <span>Settings</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+          {/* User Info */}
+          <div className="flex flex-col">
+            <p className="text-sm font-semibold text-foreground">
+              {user.name || "Student Name"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {user.role || "STUDENT"}
+            </p>
+            <p className="text-xs text-muted-foreground truncate max-w-[150px]">
+              {user.organization?.collegeName || "Institute Name"}
+            </p>
+          </div>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
 }
+

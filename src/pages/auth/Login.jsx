@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { GraduationCap, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
@@ -12,11 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { loginApi } from "../../api/authApi";
 import { ROLES } from "../../utils/roles";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../redux/slices/authSlice";
+import { clearError } from "../../redux/slices/admin/userMgmtSlice";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const auth = useSelector((state) => state.auth);
+  const { loading, error, isAuthenticated, user } = auth;
 
   const [formData, setFormData] = useState({
     role: "",
@@ -25,7 +31,6 @@ const LoginPage = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,26 +51,29 @@ const LoginPage = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
+    dispatch(loginUser(formData));
+  };
 
-    try {
-      setIsLoading(true);
-      const res = await loginApi(formData);
+  useEffect(() => {
+    if (error) {
+      alert(error); // exact backend message
+      // optional: clear after showing
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
-      const { token, user } = res.data;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      switch (formData.role) {
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      switch (user.role) {  
         case "STUDENT":
           navigate("/student");
           break;
         case "TPO":
           navigate("/tpo");
-          break;
+          break;  
         case "CADMIN":
           navigate("/admin");
-          break;
+          break;  
         case "COMPANY":
           navigate("/company");
           break;
@@ -75,12 +83,8 @@ const LoginPage = () => {
         default:
           navigate("/");
       }
-    } catch (error) {
-      alert(error.response?.data?.message || "Login failed");
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [isAuthenticated, user, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black-50 via-white to-purple-50 p-4">
@@ -148,18 +152,40 @@ const LoginPage = () => {
             )}
           </div>
 
+          
+          {/* 🔹 Remember me & Forgot password */}
+          <div className="flex items-center justify-between mt-3 mb-4 text-sm">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                className="rounded border-gray-300 text-blue-500/50 focus:ring-blue-500"
+              />
+              <span className="text-white-600">Remember me</span>
+            </label>
+
+
+             <p className="text-center text-sm mt-1">
+
+            <Button variant="link" onClick={() =>   navigate('/forgot-password')}
+               className="no-underline hover:no-underline p-0 h-auto">
+              Forgot Password?
+            </Button>
+          </p>
+          </div>
+
           <Button
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={loading}
             className="w-full mt-4"
           >
-            {isLoading ? "Logging in..." : <><LogIn /> Login</>}
+            {loading ? "Logging in..." : <><LogIn /> Login</>}
           </Button>
 
            {/* Sign up link */}
           <p className="text-center text-sm mt-6">
             Don’t have an account?{' '}
-            <Button variant="link" onClick={() => navigate('/requestTrial')}>
+            <Button variant="link" onClick={() => navigate('/requestTrial')}
+               className="no-underline hover:no-underline p-0 h-auto">
               Request here
             </Button>
           </p>

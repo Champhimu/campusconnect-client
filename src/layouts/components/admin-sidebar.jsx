@@ -21,6 +21,7 @@ import {
   LifeBuoy,
   FileCog,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const menuItems = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
@@ -33,6 +34,8 @@ const menuItems = [
 
 export function AdminSidebar() {
   const location = useLocation();
+  const auth = useSelector((state) => state.auth);
+  const { user } = auth;
 
   return (
     <Sidebar>
@@ -65,21 +68,27 @@ export function AdminSidebar() {
 
       {/* Footer */}
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Help">
-              <LifeBuoy />
-              <span>Help</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+        <div className="mt-4 flex items-center gap-3 rounded-lg bg-muted p-3 shadow-sm">
+          {/* Optional Avatar */}
+          <div className="flex-shrink-0">
+            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-muted-foreground font-bold">
+              {user.name ? user.name[0] : "ADMIN"}
+            </div>
+          </div>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Settings">
-              <Settings />
-              <span>Settings</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+          {/* User Info */}
+          <div className="flex flex-col">
+            <p className="text-sm font-semibold text-foreground">
+              {user.name || "Admin Name"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {user.role || "ADMIN"}
+            </p>
+            <p className="text-xs text-muted-foreground truncate max-w-[150px]">
+              {user.organization?.collegeName || "Institute Name"}
+            </p>
+          </div>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
