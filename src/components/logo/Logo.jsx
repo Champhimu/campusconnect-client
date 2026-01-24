@@ -6,7 +6,7 @@ const Logo = ({ className }) => {
       className={`flex items-center gap-2 text-lg font-bold tracking-tight text-sidebar-primary`}
     >
       <GraduationCap className="h-6 w-6" />
-      <span className="font-headline">CampusConnectAI</span>
+      <span className="font-headline">OPMS</span>
     </div>
   );
 };
