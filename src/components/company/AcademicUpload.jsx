@@ -5,17 +5,17 @@ import { Button } from "../ui/button";
 import { useToast } from "../../hooks/use-toast";
 import { FileText, FileUp, X, Download, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { bulkUploadAcademic, clearBulkResult, clearError } from "../../redux/slices/admin/userMgmtSlice";
+import { bulkUploadAcademic } from "../../redux/slices/admin/userMgmtSlice";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
 export function AcademicUpload() {
   const [file, setFile] = useState(null);
-  const [isPending, startTransition] = useTransition();
+  const [isPending] = useTransition();
   const { toast } = useToast();
   const dispatch = useDispatch();
 
-  const { bulkLoading, bulkResult, bulkError } = useSelector((state) => state.admin);
+  const { bulkResult } = useSelector((state) => state.admin);
   const expectedColumns = "RegNo, CGPA, Backlogs, Semester";
 
   const handleFileChange = (e) => {

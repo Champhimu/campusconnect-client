@@ -6,7 +6,7 @@ import LandingPage from "./pages/LandingPage";
 /* AUTH */
 import LoginPage from "./pages/auth/Login";
 import RequestAccessPage from "./pages/auth/RequestAccessForm";
-import ForgotPassword from "./pages/auth/ForgotPassword";
+// import ForgotPassword from "./pages/auth/ForgotPassword";
 
 /* DASHBOARDS */
 import StudentDashboard from "./pages/student/Dashboard";

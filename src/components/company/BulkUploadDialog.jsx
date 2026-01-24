@@ -24,7 +24,7 @@ export function BulkUploadDialog({ open, onOpenChange, userType }) {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const dispatch = useDispatch();
-  const { bulkLoading, bulkResult, bulkError } = useSelector((state) => state.admin);
+  const { bulkResult } = useSelector((state) => state.admin);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0];
@@ -67,9 +67,9 @@ export function BulkUploadDialog({ open, onOpenChange, userType }) {
       try {
 
         // Dispatch appropriate Redux action
-        let response;
-        if (userType === "Student") response = await dispatch(bulkUploadStudents(formData)).unwrap();
-        else if (userType === "TPO") response = await dispatch(bulkCreateTPOs(formData)).unwrap();
+        // let response;
+        if (userType === "Student") await dispatch(bulkUploadStudents(formData)).unwrap();
+        else if (userType === "TPO") await dispatch(bulkCreateTPOs(formData)).unwrap();
         // else if (userType === "Academic") response = await dispatch(bulkUploadAcademic(formData)).unwrap();
         dispatch(fetchStudents);
         // toast({ title: "Upload Successful", description: `Processed ${rows.length} row(s)` });

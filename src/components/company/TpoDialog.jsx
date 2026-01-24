@@ -8,7 +8,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Loader2 } from "lucide-react";
-import { useToast } from "../../hooks/use-toast";
+// import { useToast } from "../../hooks/use-toast";
 import { Label } from "../ui/label";
 import { createTPO } from "../../redux/slices/admin/userMgmtSlice";
 import { useDispatch } from "react-redux";
@@ -28,8 +28,8 @@ export function TpoDialog({ open, onOpenChange, mode, tpo, onSuccess }) {
       : "TPO user details."
 
   const formId = useId();
-  const [isPending, startTransition] = useTransition();
-  const { toast } = useToast();
+  const [isPending] = useTransition();
+  // const { toast } = useToast();
   const dispatch = useDispatch();
   
   const form = useForm({
@@ -50,7 +50,7 @@ export function TpoDialog({ open, onOpenChange, mode, tpo, onSuccess }) {
   }, [tpo, form]);
 
   const onSubmit = async(data) => {
-    const result = await dispatch(createTPO(data)).unwrap();
+    await dispatch(createTPO(data)).unwrap();
     alert("TPO Added");
     onSuccess()
     // startTransition(() => {
