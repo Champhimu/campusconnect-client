@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import axiosInstance from "../../api/axiosInstance";
 import { AppHeader } from "../../components/app-header/AppHeader";
 import {
   Avatar,
@@ -15,8 +17,33 @@ import {
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Pen } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function CompanyProfilePage() {
+  // const [company, setCompany] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  const { user, loading } = useSelector((state) => state.auth);
+
+  // useEffect(() => {
+  //   const fetchCompanyProfile = async () => {
+  //     try {
+  //       const { data } = await axiosInstance.get("/company/companyProfile");
+
+  //       if (data.organizationType !== "CompanyProfile") return;
+  //       console.log(data);
+  //       setCompany(data.organizationProfile);
+  //     } catch (error) {
+  //       console.error(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchCompanyProfile();
+  // }, []);
+
+  // if (!company) return <p className="p-8">Company profile not found</p>;
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <AppHeader title="Company Profile" />
@@ -26,13 +53,13 @@ export default function CompanyProfilePage() {
           <CardHeader>
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src="https://images.unsplash.com/photo-1662052955098-042b46e60c2b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0ZWNoJTIwbG9nb3xlbnwwfHx8fDE3Njg0MTI4MDZ8MA&ixlib=rb-4.1.0&q=80&w=1080" />
-                <AvatarFallback>IS</AvatarFallback>
+                <AvatarImage src={user.organization.logoUrl || ""} />
+                <AvatarFallback>{user.organization.companyName?.[0]}</AvatarFallback>
               </Avatar>
 
               <div>
                 <CardTitle className="font-headline text-2xl">
-                  Innovatech Solutions
+                  {user.organization.companyName}
                 </CardTitle>
                 <CardDescription>
                   Pioneering the future of technology.
@@ -53,7 +80,7 @@ export default function CompanyProfilePage() {
                   <Label htmlFor="company-name">Company Name</Label>
                   <Input
                     id="company-name"
-                    defaultValue="Innovatech Solutions"
+                    defaultValue={user.organization.companyName}
                   />
                 </div>
 
@@ -61,7 +88,7 @@ export default function CompanyProfilePage() {
                   <Label htmlFor="website">Website</Label>
                   <Input
                     id="website"
-                    defaultValue="https://innovatech.com"
+                    defaultValue= {user.organization.companyWebsite}
                   />
                 </div>
               </div>
@@ -76,14 +103,14 @@ export default function CompanyProfilePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="hr-name">HR Name</Label>
-                  <Input defaultValue="Jane Doe" />
+                  <Input defaultValue={user.name} />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="hr-email">HR Email Address</Label>
                   <Input
                     type="email"
-                    defaultValue="jane.doe@innovatech.com"
+                    defaultValue={user.organization.contactPhone}
                   />
                 </div>
               </div>

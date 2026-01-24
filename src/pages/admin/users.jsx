@@ -240,7 +240,11 @@ export default function UserManagementPage() {
                 <div className="flex items-center justify-center h-full w-full">
                   <SparrowLoader text="Loading TPOs List..." />
                 </div>
-              </> :
+              </> : tpos.length === 0  ? <EmptyState
+                icon={Users}
+                title="No TPO Found"
+                description="No TPO records found. TPO added to the system will appear here."
+              /> : 
                 <CardContent>
                   <Table>
                     <TableHeader>
@@ -249,6 +253,7 @@ export default function UserManagementPage() {
                         <TableHead>Email</TableHead>
                         <TableHead>Department</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>

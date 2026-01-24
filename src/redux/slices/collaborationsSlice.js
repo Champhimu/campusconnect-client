@@ -137,7 +137,7 @@ const collaborationsSlice = createSlice({
       })
       .addCase(fetchPendingCollaborations.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message || action.payload;
+        state.error = action.payload || action.payload;
       });
 
     // // Accept collaboration
